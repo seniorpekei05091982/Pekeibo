@@ -12,7 +12,8 @@ import {
   Skull,
   TrendingUp,
   Filter,
-  MessageCircle
+  MessageCircle,
+  Home
 } from 'lucide-react';
 import { StatCard } from '../components/StatCard';
 import { DataTable } from '../components/DataTable';
@@ -57,13 +58,29 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectMenu }) => {
   ];
 
   return (
-    <div className="p-6 space-y-8 animate-in fade-in duration-500">
+    <div className="p-6 space-y-6 animate-in fade-in duration-500">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
-           <TrendingUp className="text-blue-500" /> Dashboard SIM GEREJA
+           <TrendingUp className="text-blue-500" /> Dashboard
         </h1>
-        <div className="text-sm text-slate-500 font-medium bg-white px-3 py-1.5 rounded-lg shadow-sm border border-slate-200">
+        <div className="text-xs text-slate-500 font-bold bg-white px-3 py-1.5 rounded-lg shadow-sm border border-slate-200 uppercase tracking-wider">
           MAIN MENU / Dashboard
+        </div>
+      </div>
+
+      {/* Welcome Banner */}
+      <div className="bg-white p-8 rounded-xl border border-slate-200 shadow-sm relative overflow-hidden group">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-blue-500/10 transition-colors duration-500"></div>
+        <div className="absolute bottom-0 left-0 w-32 h-32 bg-orange-500/5 rounded-full translate-y-1/2 -translate-x-1/2"></div>
+        
+        <div className="relative z-10 flex flex-col items-start space-y-1">
+          <h2 className="text-lg md:text-xl font-medium text-slate-500 tracking-tight">Selamat Datang di</h2>
+          <h3 className="text-2xl md:text-3xl font-bold text-slate-800 leading-tight tracking-tight">
+            Gereja Kemah Injil (KINGMI) Di Tanah Papua
+          </h3>
+          <p className="text-xs md:text-sm font-bold text-blue-600/80 uppercase tracking-widest pt-2 border-t border-slate-100 w-full max-w-2xl mt-1">
+            Sistem Informasi Manajemen Gereja Terintegrasi
+          </p>
         </div>
       </div>
 
@@ -81,14 +98,14 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectMenu }) => {
       {/* Dynamic Jemaat Table with Filters */}
       <div className="space-y-4">
         <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200 flex flex-wrap items-center gap-4">
-          <div className="flex items-center gap-2 text-slate-600 text-sm font-bold uppercase tracking-wider">
-            <Filter size={16} className="text-blue-500" /> Filter Jemaat:
+          <div className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase tracking-wider">
+            <Filter size={14} className="text-blue-500" /> Filter Jemaat:
           </div>
           <div className="flex gap-4 items-center">
             <select 
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="text-xs font-semibold bg-slate-50 border border-slate-200 rounded px-2 py-1.5 outline-none focus:ring-1 focus:ring-blue-500"
+              className="text-[10px] font-black uppercase bg-slate-50 border border-slate-200 rounded px-3 py-2 outline-none focus:ring-1 focus:ring-blue-500 tracking-wider text-slate-600 cursor-pointer"
             >
               <option value="Semua">Status: Semua</option>
               <option value="Tetap">Tetap</option>
@@ -97,7 +114,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectMenu }) => {
             <select 
               value={filterRayon}
               onChange={(e) => setFilterRayon(e.target.value)}
-              className="text-xs font-semibold bg-slate-50 border border-slate-200 rounded px-2 py-1.5 outline-none focus:ring-1 focus:ring-blue-500"
+              className="text-[10px] font-black uppercase bg-slate-50 border border-slate-200 rounded px-3 py-2 outline-none focus:ring-1 focus:ring-blue-500 tracking-wider text-slate-600 cursor-pointer"
             >
               <option value="Semua">Lingkungan: Semua</option>
               <option value="Rayon 1">Rayon 1</option>

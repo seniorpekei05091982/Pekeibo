@@ -32,7 +32,7 @@ const NavMenuItem: React.FC<{
   if (item.minRole === 'Sinode' && userRole !== 'Sinode') return null;
   if (item.minRole === 'Klasis' && userRole === 'Jemaat') return null;
   
-  // Hide logout from the loop because we'll place it explicitly at the bottom
+  // Sembunyikan logout dari loop menu utama karena akan diletakkan secara statis di bawah
   if (item.id === 'logout') return null;
 
   if (item.isHeader) {
@@ -139,18 +139,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ onSelect, activeId, churchInfo
         ))}
       </nav>
       
-      {/* FOOTER AREA WITH LOGOUT - Explicitly Styled and Accessible */}
+      {/* AREA FOOTER DENGAN TOMBOL LOGOUT YANG DIPERBAIKI */}
       <div className="mt-auto p-4 bg-slate-950 border-t border-slate-900 space-y-4 relative z-50">
         <button 
           type="button"
-          onClick={(e) => {
-            e.preventDefault();
-            onSelect('logout');
-          }}
-          className="w-full flex items-center justify-center gap-4 px-6 py-4 bg-rose-500 hover:bg-rose-600 text-white rounded-2xl transition-all duration-300 group shadow-xl hover:shadow-rose-600/40 active:scale-95 cursor-pointer"
+          onClick={() => onSelect('logout')}
+          className="w-full flex items-center justify-center gap-4 px-6 py-4 bg-rose-600 hover:bg-rose-700 text-white rounded-2xl transition-all duration-300 group shadow-xl hover:shadow-rose-600/40 active:scale-95 cursor-pointer"
         >
           <LogOut size={18} className="group-hover:-translate-x-1 transition-transform" />
-          <span className="text-[10px] font-black uppercase tracking-[0.2em]">Keluar Sistem</span>
+          <span className="text-[10px] font-black uppercase tracking-[0.2em]">KELUAR SISTEM</span>
         </button>
         <div className="text-center">
           <p className="text-[8px] font-bold text-slate-600 uppercase tracking-tighter">&copy; 2024 ERA SISTEM MEDIA PAPUA</p>

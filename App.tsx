@@ -105,10 +105,12 @@ const App: React.FC = () => {
   });
 
   const handleLogout = () => {
-    // Memberikan feedback konfirmasi yang sangat jelas
-    if (window.confirm('Sistem akan menutup sesi Anda. Apakah Anda yakin ingin keluar?')) {
+    // Meminta konfirmasi sebelum keluar untuk keamanan
+    const confirmLogout = window.confirm('Apakah Anda yakin ingin keluar dari sistem SIM GEREJA KINGMI PAPUA?');
+    if (confirmLogout) {
       setIsLoggedIn(false);
       setActiveMenu('dashboard');
+      // Sesi akan ditutup dan komponen Login akan ditampilkan kembali
     }
   };
 

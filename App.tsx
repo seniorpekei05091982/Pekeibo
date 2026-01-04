@@ -33,7 +33,28 @@ const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [activeMenu, setActiveMenu] = useState('dashboard');
   
-  // Centralized State for Global Profiles
+  // Shared Global States
+  const [jemaatData, setJemaatData] = useState<any[]>([
+    { id: '1', nomerJemaat: '000020', nomerKeluarga: '000001', nama: 'Amir', alamat: 'Jl. Rungkut Mejoyo 12345', jenisKelamin: 'Laki-Laki', tempatLahir: 'Surabaya', tanggalLahir: '08 Maret 1970', nomerHP: '08901234567', komsel: 'Paulus', status: 'Tetap', foto: 'https://ui-avatars.com/api/?name=Amir&background=000&color=fff' }
+  ]);
+
+  const [jadwalData, setJadwalData] = useState<any[]>([
+    { id: '1', namaIbadah: 'Ibadah Raya 1', hari: 'Minggu', jamMulai: '06:00:00', jamSelesai: '08:00:00', lokasi: 'Lantai 1 & 2', keterangan: '-' },
+    { id: '2', namaIbadah: 'Sekolah Minggu', hari: 'Minggu', jamMulai: '08:00:00', jamSelesai: '09:30:00', lokasi: 'Aula', keterangan: '-' }
+  ]);
+
+  const [pelayananData, setPelayananData] = useState<any[]>([
+    { id: '1', namaPelayanan: 'Majelis', keterangan: '-' },
+    { id: '2', namaPelayanan: 'Diaken', keterangan: '-' }
+  ]);
+
+  const [asetData, setAsetData] = useState<any[]>([
+    { id: '1', namaAset: 'Kursi Lipat', kodeAset: 'AST-001', lokasi: 'Aula', kondisi: 'Baik', jumlah: 150 }
+  ]);
+
+  const [keuanganData, setKeuanganData] = useState<any[]>([]);
+
+  // Church & Admin Profile
   const [churchInfo, setChurchInfo] = useState({
     nama: 'Gereja Kemah Injil (KINGMI) Di Tanah Papua',
     logo: 'https://ui-avatars.com/api/?name=KINGMI&background=fb923c&color=fff&size=128',
@@ -56,11 +77,8 @@ const App: React.FC = () => {
   };
 
   const handleMenuSelect = (id: string) => {
-    if (id === 'logout') {
-      handleLogout();
-    } else {
-      setActiveMenu(id);
-    }
+    if (id === 'logout') handleLogout();
+    else setActiveMenu(id);
   };
 
   if (!isLoggedIn) {
@@ -70,66 +88,49 @@ const App: React.FC = () => {
   const renderContent = () => {
     switch (activeMenu) {
       case 'dashboard':
-        return <Dashboard onSelectMenu={setActiveMenu} />;
+        return (
+          <Dashboard 
+            onSelectMenu={setActiveMenu} 
+            jemaatData={jemaatData}
+            jadwalData={jadwalData}
+            pelayananData={pelayananData}
+            asetData={asetData}
+            keuanganData={keuanganData}
+          />
+        );
       case 'jemaat':
       case 'cetak-jemaat':
-        return <Jemaat onBack={() => setActiveMenu('dashboard')} churchInfo={churchInfo} />;
+        return <Jemaat onBack={() => setActiveMenu('dashboard')} churchInfo={churchInfo} data={jemaatData} setData={setJemaatData} />;
       case 'jadwal':
-        return <JadwalIbadah onBack={() => setActiveMenu('dashboard')} />;
+        return <JadwalIbadah onBack={() => setActiveMenu('dashboard')} data={jadwalData} setData={setJadwalData} />;
       case 'pelayanan':
-        return <DaftarPelayanan onBack={() => setActiveMenu('dashboard')} />;
-      case 'komsel':
-        return <Komsel onBack={() => setActiveMenu('dashboard')} />;
-      case 'talenta':
-        return <Talenta onBack={() => setActiveMenu('dashboard')} />;
+        return <DaftarPelayanan onBack={() => setActiveMenu('dashboard')} data={pelayananData} setData={setPelayananData} />;
       case 'keuangan':
-        return <Keuangan onBack={() => setActiveMenu('dashboard')} />;
+        return <Keuangan onBack={() => setActiveMenu('dashboard')} data={keuanganData} setData={setKeuanganData} />;
       case 'aset':
-        return <Aset onBack={() => setActiveMenu('dashboard')} />;
+        return <Aset onBack={() => setActiveMenu('dashboard')} data={asetData} setData={setAsetData} />;
       
-      // Settings
-      case 'users':
-        return <Users onBack={() => setActiveMenu('dashboard')} />;
+      // Settings & Profile
       case 'profile-user':
-        return <ProfileUser 
-          adminInfo={adminInfo} 
-          setAdminInfo={setAdminInfo} 
-          onBack={() => setActiveMenu('dashboard')} 
-        />;
-      case 'backup':
-        return <BackupData onBack={() => setActiveMenu('dashboard')} />;
+        return <ProfileUser adminInfo={adminInfo} setAdminInfo={setAdminInfo} onBack={() => setActiveMenu('dashboard')} />;
       case 'profile-gereja':
-        return <ProfileGereja 
-          churchData={churchInfo} 
-          setChurchData={setChurchInfo} 
-          onBack={() => setActiveMenu('dashboard')} 
-        />;
+        return <ProfileGereja churchData={churchInfo} setChurchData={setChurchInfo} onBack={() => setActiveMenu('dashboard')} />;
 
-      // Reports
-      case 'lap-ultah': return <LaporanUltah onBack={() => setActiveMenu('dashboard')} churchInfo={churchInfo} />;
-      case 'lap-usia': return <LaporanUsia onBack={() => setActiveMenu('dashboard')} churchInfo={churchInfo} />;
-      case 'lap-usia-filter': return <LaporanUsiaFilter onBack={() => setActiveMenu('dashboard')} churchInfo={churchInfo} />;
-      case 'lap-jk': return <LaporanGeneric type="Jenis Kelamin" churchInfo={churchInfo} onBack={() => setActiveMenu('dashboard')} />;
-      case 'lap-ibadah': return <LaporanGeneric type="Ibadah" churchInfo={churchInfo} onBack={() => setActiveMenu('dashboard')} />;
-      case 'lap-pelayanan': return <LaporanGeneric type="Pelayanan" churchInfo={churchInfo} onBack={() => setActiveMenu('dashboard')} />;
-      case 'lap-talenta': return <LaporanGeneric type="Talenta" churchInfo={churchInfo} onBack={() => setActiveMenu('dashboard')} />;
-      case 'lap-keluarga': return <LaporanGeneric type="Keluarga" churchInfo={churchInfo} onBack={() => setActiveMenu('dashboard')} />;
-      case 'lap-komisi-sm': return <LaporanKomisi type="Pelayanan Anak & Remaja (SM)" churchInfo={churchInfo} onBack={() => setActiveMenu('dashboard')} />;
-      case 'lap-komisi-pemuda': return <LaporanKomisi type="Pelayanan Pemuda" churchInfo={churchInfo} onBack={() => setActiveMenu('dashboard')} />;
-      case 'lap-komisi-perkawan': return <LaporanKomisi type="Pelayanan Perempuan (Perkawan)" churchInfo={churchInfo} onBack={() => setActiveMenu('dashboard')} />;
-      case 'lap-komisi-perkarya': return <LaporanKomisi type="Pelayanan Laki-laki (Perkarya)" churchInfo={churchInfo} onBack={() => setActiveMenu('dashboard')} />;
-      case 'lap-keuangan': return <LaporanKeuanganReport onBack={() => setActiveMenu('dashboard')} />;
-      case 'lap-aset': return <LaporanAsetReport onBack={() => setActiveMenu('dashboard')} />;
-
-      case 'komisi-sm': return <KomisiMember type="Pelayanan Anak & Remaja (SM)" onBack={() => setActiveMenu('dashboard')} />;
-      case 'komisi-pemuda': return <KomisiMember type="Pelayanan Pemuda" onBack={() => setActiveMenu('dashboard')} />;
-      case 'komisi-perkawan': return <KomisiMember type="Pelayanan Perempuan (Perkawan)" onBack={() => setActiveMenu('dashboard')} />;
-      case 'komisi-perkarya': return <KomisiMember type="Pelayanan Laki-laki (Perkarya)" onBack={() => setActiveMenu('dashboard')} />;
+      // Others (Fallback simple logic or developed pages)
       case 'penyerahan': return <PenyerahanAnak onBack={() => setActiveMenu('dashboard')} />;
-      case 'katekisasi': return <Katekisasi onBack={() => setActiveMenu('dashboard')} />;
+      case 'katekisasi': return <Katekisasi />;
       case 'baptisan': return <Baptisan onBack={() => setActiveMenu('dashboard')} />;
       case 'kedukaan': return <Kedukaan onBack={() => setActiveMenu('dashboard')} />;
       case 'konseling': return <Konseling onBack={() => setActiveMenu('dashboard')} />;
+      case 'users': return <Users onBack={() => setActiveMenu('dashboard')} />;
+      case 'backup': return <BackupData onBack={() => setActiveMenu('dashboard')} />;
+      
+      // Reports
+      case 'lap-ultah': return <LaporanUltah onBack={() => setActiveMenu('dashboard')} />;
+      case 'lap-usia': return <LaporanUsia onBack={() => setActiveMenu('dashboard')} />;
+      case 'lap-usia-filter': return <LaporanUsiaFilter onBack={() => setActiveMenu('dashboard')} />;
+      case 'lap-jk': return <LaporanGeneric type="Jenis Kelamin" churchInfo={churchInfo} onBack={() => setActiveMenu('dashboard')} />;
+      
       default:
         return (
           <div className="p-8 text-center py-20 bg-white m-6 rounded-xl border border-slate-200 shadow-sm">
@@ -142,7 +143,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden bg-slate-100">
+    <div className="flex h-screen overflow-hidden bg-slate-100 font-inter">
       <aside className="hidden lg:block shrink-0">
         <Sidebar onSelect={handleMenuSelect} activeId={activeMenu} churchInfo={churchInfo} adminInfo={adminInfo} />
       </aside>
@@ -151,7 +152,7 @@ const App: React.FC = () => {
         <main className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-300">
           {renderContent()}
           <footer className="p-6 text-[11px] text-slate-400 flex flex-col sm:flex-row justify-between items-center border-t border-slate-200 mt-auto bg-white/50">
-            <span>Copyright &copy; 2023 <strong className="text-slate-500 font-bold">Gereja KINGMI di Tanah Papua</strong> | Era Sistem Media. All rights reserved.</span>
+            <span>Copyright &copy; 2024 <strong className="text-slate-500 font-bold">Gereja KINGMI di Tanah Papua</strong> | Era Sistem Media. All rights reserved.</span>
             <span className="mt-2 sm:mt-0 font-semibold text-rose-600 uppercase tracking-tighter">Sistem Informasi Gereja Version 2.0</span>
           </footer>
         </main>

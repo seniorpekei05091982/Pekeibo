@@ -13,48 +13,50 @@ import {
   TrendingUp,
   Filter,
   MessageCircle,
-  Home
+  Box
 } from 'lucide-react';
 import { StatCard } from '../components/StatCard';
 import { DataTable } from '../components/DataTable';
 import { Modal } from '../components/Modal';
 
-const INITIAL_JEMAAT_DATA = [
-  ['Agustina Siahaan', 'Rayon 1', 'Tetap', 'Wanita', '0812-3456-7890'],
-  ['Budi Santoso', 'Rayon 3', 'Tetap', 'Pria', '0813-1111-2222'],
-  ['Santi Maria', 'Rayon 2', 'Calon', 'Wanita', '0819-8888-7777'],
-  ['Daud Wijaya', 'Rayon 1', 'Tetap', 'Pria', '0852-1234-5678'],
-  ['Marta Zai', 'Rayon 3', 'Calon', 'Wanita', '0821-5555-4444'],
-];
-
 interface DashboardProps {
   onSelectMenu: (id: string) => void;
+  jemaatData: any[];
+  jadwalData: any[];
+  pelayananData: any[];
+  asetData: any[];
+  keuanganData: any[];
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ onSelectMenu }) => {
+const Dashboard: React.FC<DashboardProps> = ({ 
+  onSelectMenu, 
+  jemaatData, 
+  jadwalData, 
+  pelayananData, 
+  asetData,
+  keuanganData 
+}) => {
   const [filterStatus, setFilterStatus] = useState('Semua');
   const [filterRayon, setFilterRayon] = useState('Semua');
-  const [selectedItem, setSelectedItem] = useState<any[] | null>(null);
+  const [selectedItem, setSelectedItem] = useState<any | null>(null);
 
   const filteredJemaat = useMemo(() => {
-    return INITIAL_JEMAAT_DATA.filter(row => {
-      const statusMatch = filterStatus === 'Semua' || row[2] === filterStatus;
-      const rayonMatch = filterRayon === 'Semua' || row[1] === filterRayon;
+    return jemaatData.filter(row => {
+      const statusMatch = filterStatus === 'Semua' || row.status === filterStatus;
+      const rayonMatch = filterRayon === 'Semua' || row.komsel === filterRayon;
       return statusMatch && rayonMatch;
     });
-  }, [filterStatus, filterRayon]);
+  }, [jemaatData, filterStatus, filterRayon]);
 
   const stats = [
-    { title: 'Jemaat', value: INITIAL_JEMAAT_DATA.length, color: 'gray', icon: <Users size={48} />, menuId: 'jemaat' },
-    { title: 'Jadwal Ibadah', value: 5, color: 'green', icon: <Calendar size={48} />, menuId: 'jadwal' },
-    { title: 'Daftar Pelayanan', value: 6, color: 'red', icon: <List size={48} />, menuId: 'pelayanan' },
+    { title: 'Jemaat', value: jemaatData.length, color: 'gray', icon: <Users size={48} />, menuId: 'jemaat' },
+    { title: 'Jadwal Ibadah', value: jadwalData.length, color: 'green', icon: <Calendar size={48} />, menuId: 'jadwal' },
+    { title: 'Daftar Pelayanan', value: pelayananData.length, color: 'red', icon: <List size={48} />, menuId: 'pelayanan' },
     { title: 'Komisi', value: 4, color: 'yellow', icon: <UsersRound size={48} />, menuId: 'komisi' },
     { title: 'Penyerahan Anak', value: 4, color: 'slate', icon: <UserPlus size={48} />, menuId: 'penyerahan' },
     { title: 'Baptisan Air', value: 5, color: 'green', icon: <Droplets size={48} />, menuId: 'baptisan' },
     { title: 'Kedukaan', value: 2, color: 'yellow', icon: <Skull size={48} />, menuId: 'kedukaan' },
-    { title: 'Konseling', value: 3, color: 'blue', icon: <MessageCircle size={48} />, menuId: 'konseling' },
-    { title: 'Katekisasi', value: 12, color: 'teal', icon: <Star size={48} />, menuId: 'katekisasi' },
-    { title: 'Aset Gereja', value: 8, color: 'gray', icon: <List size={48} />, menuId: 'aset' },
+    { title: 'Aset Gereja', value: asetData.length, color: 'gray', icon: <Box size={48} />, menuId: 'aset' },
   ];
 
   return (
@@ -99,7 +101,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectMenu }) => {
         ))}
       </div>
 
-      {/* Dynamic Jemaat Table with Filters */}
+      {/* Dynamic Data Tables */}
       <div className="space-y-4">
         <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200 flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase tracking-wider">
@@ -121,9 +123,9 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectMenu }) => {
               className="text-[10px] font-black uppercase bg-slate-50 border border-slate-200 rounded px-3 py-2 outline-none focus:ring-1 focus:ring-blue-500 tracking-wider text-slate-600 cursor-pointer"
             >
               <option value="Semua">Lingkungan: Semua</option>
-              <option value="Rayon 1">Rayon 1</option>
-              <option value="Rayon 2">Rayon 2</option>
-              <option value="Rayon 3">Rayon 3</option>
+              <option value="Petrus">Petrus</option>
+              <option value="Paulus">Paulus</option>
+              <option value="Abraham">Abraham</option>
             </select>
           </div>
         </div>
@@ -132,20 +134,16 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectMenu }) => {
           <DataTable 
             title="Tabel Jemaat Baru" 
             headers={['Nama', 'Lingkungan', 'Status']} 
-            data={filteredJemaat.map(r => [r[0], r[1], r[2]])}
+            data={filteredJemaat.slice(0, 5).map(r => [r.nama, r.komsel, r.status || 'Tetap'])}
             onViewDetails={(row) => {
-              const fullData = INITIAL_JEMAAT_DATA.find(d => d[0] === row[0]);
-              setSelectedItem(fullData || row);
+              const fullData = jemaatData.find(d => d.nama === row[0]);
+              setSelectedItem(fullData);
             }}
           />
           <DataTable 
             title="Jadwal Ibadah Terdekat" 
             headers={['Ibadah', 'Waktu', 'Ruang']} 
-            data={[
-              ['Ibadah Raya 1', 'Minggu 08:00', 'Gereja'],
-              ['Sekolah Minggu', 'Minggu 08:00', 'Aula'],
-              ['Persekutuan Doa', 'Rabu 18:00', 'Gereja'],
-            ]}
+            data={jadwalData.slice(0, 5).map(j => [j.namaIbadah, `${j.hari} ${j.jamMulai.substring(0,5)}`, j.lokasi])}
           />
         </div>
       </div>
@@ -158,27 +156,27 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectMenu }) => {
         {selectedItem && (
           <div className="space-y-4">
             <div className="flex items-center gap-4 p-4 bg-blue-50 rounded-xl">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-blue-600">
-                <Users size={32} />
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 overflow-hidden">
+                {selectedItem.foto ? <img src={selectedItem.foto} alt="Avatar" className="w-full h-full object-cover" /> : <Users size={32} />}
               </div>
               <div>
-                <h4 className="text-xl font-bold text-slate-800">{selectedItem[0]}</h4>
-                <p className="text-sm text-slate-500 font-medium">{selectedItem[2]} - {selectedItem[1]}</p>
+                <h4 className="text-xl font-bold text-slate-800">{selectedItem.nama}</h4>
+                <p className="text-sm text-slate-500 font-medium">{selectedItem.nomerJemaat} - {selectedItem.komsel}</p>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div className="p-3 bg-slate-50 rounded-lg">
                 <p className="text-slate-400 font-bold text-[10px] uppercase">Jenis Kelamin</p>
-                <p className="font-semibold text-slate-700">{selectedItem[3] || '-'}</p>
+                <p className="font-semibold text-slate-700">{selectedItem.jenisKelamin || '-'}</p>
               </div>
               <div className="p-3 bg-slate-50 rounded-lg">
                 <p className="text-slate-400 font-bold text-[10px] uppercase">Telepon</p>
-                <p className="font-semibold text-slate-700">{selectedItem[4] || '-'}</p>
+                <p className="font-semibold text-slate-700">{selectedItem.nomerHP || '-'}</p>
               </div>
             </div>
             <div className="p-3 bg-slate-50 rounded-lg">
-              <p className="text-slate-400 font-bold text-[10px] uppercase">Catatan Pelayanan</p>
-              <p className="text-slate-700 leading-relaxed italic">"Jemaat aktif dalam kegiatan Rayon dan rutin mengikuti ibadah minggu."</p>
+              <p className="text-slate-400 font-bold text-[10px] uppercase">Alamat</p>
+              <p className="text-slate-700 leading-relaxed italic">"{selectedItem.alamat || '-'}"</p>
             </div>
           </div>
         )}

@@ -20,18 +20,17 @@ interface JemaatData {
   komsel: string;
   foto?: string;
   statusKeluarga?: string;
+  status?: string;
 }
 
 interface JemaatProps {
   onBack: () => void;
   churchInfo: { nama: string, logo: string, alamat: string, telp: string };
+  data: JemaatData[];
+  setData: React.Dispatch<React.SetStateAction<JemaatData[]>>;
 }
 
-export const Jemaat: React.FC<JemaatProps> = ({ onBack, churchInfo }) => {
-  const [data, setData] = useState<JemaatData[]>([
-    { id: '1', nomerJemaat: '000020', nomerKeluarga: '000001', nama: 'Amir', alamat: 'Jl. Rungkut Mejoyo 12345', jenisKelamin: 'Laki-Laki', tempatLahir: 'Surabaya', tanggalLahir: '08 Maret 1970', nomerHP: '08901234567', komsel: 'Paulus', foto: 'https://ui-avatars.com/api/?name=Amir&background=000&color=fff' },
-  ]);
-  
+export const Jemaat: React.FC<JemaatProps> = ({ onBack, churchInfo, data, setData }) => {
   const [mode, setMode] = useState<'list' | 'add' | 'edit' | 'detail' | 'print'>('list');
   const [selected, setSelected] = useState<JemaatData | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -63,14 +62,13 @@ export const Jemaat: React.FC<JemaatProps> = ({ onBack, churchInfo }) => {
         tempatLahir: formData.tempatLahir || '',
         tanggalLahir: formData.tanggalLahir || '',
         nomerHP: formData.nomerHP || '',
-        komsel: formData.komsel || '',
+        komsel: formData.komsel || 'Petrus',
+        status: 'Tetap',
         foto: formData.foto || `https://ui-avatars.com/api/?name=${encodeURIComponent(formData.nama || '')}&background=random`
       };
       setData([newItem, ...data]);
-      alert('Data Jemaat berhasil ditambahkan!');
     } else if (mode === 'edit' && selected) {
       setData(data.map(item => item.id === selected.id ? { ...item, ...formData } : item));
-      alert('Data Jemaat berhasil diperbarui!');
     }
     
     setMode('list');
@@ -136,10 +134,6 @@ export const Jemaat: React.FC<JemaatProps> = ({ onBack, churchInfo }) => {
           </div>
         </div>
         <div className="w-full md:w-[250px] bg-slate-900 p-8 flex flex-col gap-4">
-           <div className="mb-4">
-             <h3 className="text-white font-bold text-lg">Cetak Kartu</h3>
-             <p className="text-slate-400 text-xs mt-1">Pastikan printer terhubung dan ukuran kertas sesuai.</p>
-           </div>
            <button onClick={() => window.print()} className="w-full bg-orange-500 hover:bg-orange-600 text-white font-black py-3 rounded shadow-lg transition-all text-xs uppercase tracking-widest">Print Sekarang</button>
            <button onClick={() => setMode('list')} className="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 rounded transition-all text-xs uppercase tracking-widest border border-slate-700">Kembali</button>
         </div>
@@ -149,7 +143,7 @@ export const Jemaat: React.FC<JemaatProps> = ({ onBack, churchInfo }) => {
 
   const renderFormView = () => (
     <div className="p-6 bg-slate-100 min-h-full animate-in slide-in-from-right duration-300">
-      <TopStatsBar />
+      <TopStatsBar jemaatCount={data.length} />
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-xl font-bold text-slate-800 flex items-center gap-2">
           {mode === 'add' ? <Plus className="text-blue-600" /> : <Edit className="text-blue-600" />}
@@ -161,11 +155,6 @@ export const Jemaat: React.FC<JemaatProps> = ({ onBack, churchInfo }) => {
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden max-w-5xl">
-        <div className="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2">
-           <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-           <span className="text-[11px] font-black uppercase text-slate-500 tracking-widest">Informasi Identitas Jemaat</span>
-        </div>
-        
         <div className="p-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
             <div className="space-y-5">
@@ -192,26 +181,13 @@ export const Jemaat: React.FC<JemaatProps> = ({ onBack, churchInfo }) => {
                   <option value="Perempuan">Perempuan</option>
                 </select>
               </FormField>
-              <div className="grid grid-cols-2 gap-4">
-                <FormField label="Tempat Lahir">
-                  <input type="text" className="form-input" value={formData.tempatLahir || ''} onChange={e => setFormData({...formData, tempatLahir: e.target.value})} />
-                </FormField>
-                <FormField label="Tanggal Lahir">
-                  <input type="text" className="form-input" value={formData.tanggalLahir || ''} onChange={e => setFormData({...formData, tanggalLahir: e.target.value})} placeholder="dd/mm/yyyy" />
-                </FormField>
-              </div>
             </div>
-
             <div className="space-y-5">
               <FormField label="Alamat Rumah">
-                <textarea rows={3} className="form-input" value={formData.alamat || ''} onChange={e => setFormData({...formData, alamat: e.target.value})} placeholder="Alamat lengkap jemaat"></textarea>
-              </FormField>
-              <FormField label="Nomer Handphone">
-                <input type="text" className="form-input" value={formData.nomerHP || ''} onChange={e => setFormData({...formData, nomerHP: e.target.value})} placeholder="08xx" />
+                <textarea rows={3} className="form-input" value={formData.alamat || ''} onChange={e => setFormData({...formData, alamat: e.target.value})} placeholder="Alamat lengkap"></textarea>
               </FormField>
               <FormField label="Lingkungan / Komsel">
-                <select className="form-input" value={formData.komsel || ''} onChange={e => setFormData({...formData, komsel: e.target.value})}>
-                  <option value="">- Pilih Rayon/Komsel -</option>
+                <select className="form-input" value={formData.komsel || 'Petrus'} onChange={e => setFormData({...formData, komsel: e.target.value})}>
                   <option value="Petrus">Petrus</option>
                   <option value="Paulus">Paulus</option>
                   <option value="Abraham">Abraham</option>
@@ -219,12 +195,9 @@ export const Jemaat: React.FC<JemaatProps> = ({ onBack, churchInfo }) => {
               </FormField>
             </div>
           </div>
-
           <div className="mt-12 pt-6 border-t border-slate-100 flex justify-end gap-3">
-             <button onClick={() => setMode('list')} className="px-6 py-2 bg-slate-100 text-slate-600 rounded text-xs font-bold flex items-center gap-2 hover:bg-slate-200 transition-colors">
-                <RotateCcw size={14} /> Batal
-             </button>
-             <button onClick={handleSave} className="px-10 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs font-black uppercase tracking-widest flex items-center gap-2 shadow-lg shadow-blue-100 transition-all">
+             <button onClick={() => setMode('list')} className="px-6 py-2 bg-slate-100 text-slate-600 rounded text-xs font-bold flex items-center gap-2">Batal</button>
+             <button onClick={handleSave} className="px-10 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs font-black uppercase tracking-widest flex items-center gap-2 shadow-lg">
                 <CheckCircle2 size={14} /> Simpan Data
              </button>
           </div>
@@ -235,7 +208,7 @@ export const Jemaat: React.FC<JemaatProps> = ({ onBack, churchInfo }) => {
 
   const renderDetailView = () => (
     <div className="p-6 bg-slate-100 min-h-full animate-in fade-in duration-500">
-      <TopStatsBar />
+      <TopStatsBar jemaatCount={data.length} />
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-xl font-bold text-slate-800 flex items-center gap-2 uppercase tracking-tighter">
            <User className="text-blue-600" /> Profil Jemaat
@@ -244,7 +217,6 @@ export const Jemaat: React.FC<JemaatProps> = ({ onBack, churchInfo }) => {
           <ArrowLeft size={14} /> Kembali
         </button>
       </div>
-
       <div className="bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden max-w-4xl mx-auto">
         <div className="h-32 bg-blue-600 relative">
            <div className="absolute -bottom-16 left-10">
@@ -253,7 +225,6 @@ export const Jemaat: React.FC<JemaatProps> = ({ onBack, churchInfo }) => {
               </div>
            </div>
         </div>
-        
         <div className="pt-20 px-10 pb-10">
           <div className="flex justify-between items-start mb-10">
              <div>
@@ -265,17 +236,16 @@ export const Jemaat: React.FC<JemaatProps> = ({ onBack, churchInfo }) => {
                 <button onClick={() => setMode('print')} className="p-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200"><Printer size={18} /></button>
              </div>
           </div>
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
              <div className="space-y-6">
                 <DetailItem icon={<MapPin size={16}/>} label="Alamat Rumah" value={selected?.alamat} />
-                <DetailItem icon={<Phone size={16}/>} label="Kontak Telepon" value={selected?.nomerHP} />
-                <DetailItem icon={<Users size={16}/>} label="Lingkungan / Komsel" value={selected?.komsel} />
+                <DetailItem icon={<Phone size={16}/>} label="Kontak" value={selected?.nomerHP} />
+                <DetailItem icon={<Users size={16}/>} label="Komsel" value={selected?.komsel} />
              </div>
              <div className="space-y-6">
-                <DetailItem icon={<Calendar size={16}/>} label="Tempat, Tanggal Lahir" value={`${selected?.tempatLahir}, ${selected?.tanggalLahir}`} />
-                <DetailItem icon={<User size={16}/>} label="Jenis Kelamin" value={selected?.jenisKelamin} />
-                <DetailItem icon={<Mail size={16}/>} label="Nomer Keluarga" value={selected?.nomerKeluarga} />
+                <DetailItem icon={<Calendar size={16}/>} label="Tempat, Tgl Lahir" value={`${selected?.tempatLahir}, ${selected?.tanggalLahir}`} />
+                <DetailItem icon={<User size={16}/>} label="Gender" value={selected?.jenisKelamin} />
+                <DetailItem icon={<Mail size={16}/>} label="No. Keluarga" value={selected?.nomerKeluarga} />
              </div>
           </div>
         </div>
@@ -285,15 +255,11 @@ export const Jemaat: React.FC<JemaatProps> = ({ onBack, churchInfo }) => {
 
   const renderListView = () => (
     <div className="p-6 bg-slate-100 min-h-full">
-      <TopStatsBar />
+      <TopStatsBar jemaatCount={data.length} />
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <div className="flex items-center gap-4">
           <Users className="text-slate-700" size={28} />
           <h1 className="text-2xl font-bold text-slate-800 uppercase tracking-tight">Daftar Jemaat</h1>
-        </div>
-        <div className="text-[11px] text-slate-400 font-bold uppercase tracking-widest text-right">
-          {churchInfo.nama} <br/>
-          <span className="text-blue-500">Master Data / Jemaat</span>
         </div>
       </div>
       
@@ -301,37 +267,30 @@ export const Jemaat: React.FC<JemaatProps> = ({ onBack, churchInfo }) => {
         <div className="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50/50">
           <h2 className="text-sm font-bold text-slate-700">Data Jemaat Aktif</h2>
           <button 
-            onClick={() => { setFormData({ jenisKelamin: 'Laki-Laki' }); setMode('add'); }} 
+            onClick={() => { setFormData({ jenisKelamin: 'Laki-Laki', komsel: 'Petrus' }); setMode('add'); }} 
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-xs font-bold flex items-center gap-2 shadow-md transition-all active:scale-95"
           >
             <Plus size={16} /> Tambah Jemaat
           </button>
         </div>
-
         <div className="p-4 space-y-4">
-          <div className="flex justify-between items-center">
-             <div className="relative w-full max-w-md">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-                <input 
-                   type="text" 
-                   value={searchTerm}
-                   onChange={e => setSearchTerm(e.target.value)}
-                   className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-full text-xs outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20" 
-                   placeholder="Cari jemaat berdasarkan nama atau nomer..." 
-                />
-             </div>
-             <p className="text-[10px] text-slate-400 font-bold uppercase">Total: {filteredData.length} Jemaat</p>
+          <div className="relative w-full max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+            <input 
+               type="text" 
+               value={searchTerm}
+               onChange={e => setSearchTerm(e.target.value)}
+               className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-full text-xs outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20" 
+               placeholder="Cari jemaat..." 
+            />
           </div>
-
           <div className="overflow-x-auto">
             <table className="w-full text-[11px] text-left border-collapse">
-              <thead className="bg-slate-50 border-y border-slate-200 text-slate-700 font-bold">
+              <thead className="bg-slate-50 border-y border-slate-200 text-slate-700 font-bold uppercase">
                 <tr>
                   <th className="px-4 py-3 border-r border-slate-200 text-center w-12">#</th>
-                  <th className="px-4 py-3 border-r border-slate-200">Foto</th>
                   <th className="px-4 py-3 border-r border-slate-200">Nama Lengkap</th>
                   <th className="px-4 py-3 border-r border-slate-200">No. Jemaat</th>
-                  <th className="px-4 py-3 border-r border-slate-200">Jenis Kelamin</th>
                   <th className="px-4 py-3 border-r border-slate-200">Komsel</th>
                   <th className="px-4 py-3 text-center">Aksi</th>
                 </tr>
@@ -340,20 +299,14 @@ export const Jemaat: React.FC<JemaatProps> = ({ onBack, churchInfo }) => {
                 {filteredData.map((item, idx) => (
                   <tr key={item.id} className="hover:bg-blue-50/30 transition-colors group">
                     <td className="px-4 py-4 border-r border-slate-200 text-center text-slate-500 font-medium">{idx + 1}.</td>
-                    <td className="px-4 py-4 border-r border-slate-200 w-16">
-                       <div className="w-10 h-10 rounded-full bg-slate-100 overflow-hidden border-2 border-white shadow-sm mx-auto">
-                          <img src={item.foto} className="w-full h-full object-cover" />
-                       </div>
-                    </td>
-                    <td className="px-4 py-4 border-r border-slate-200 font-bold text-slate-800 uppercase tracking-tighter">{item.nama}</td>
+                    <td className="px-4 py-4 border-r border-slate-200 font-bold text-slate-800 uppercase">{item.nama}</td>
                     <td className="px-4 py-4 border-r border-slate-200 font-medium text-blue-600">{item.nomerJemaat}</td>
-                    <td className="px-4 py-4 border-r border-slate-200">{item.jenisKelamin}</td>
                     <td className="px-4 py-4 border-r border-slate-200 font-bold text-slate-500">{item.komsel}</td>
                     <td className="px-4 py-4 text-center">
                       <div className="flex justify-center gap-1">
-                        <button onClick={() => { setSelected(item); setMode('detail'); }} className="p-1.5 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-all shadow-sm"><Eye size={14} /></button>
-                        <button onClick={() => { setSelected(item); setFormData(item); setMode('edit'); }} className="p-1.5 bg-amber-100 text-amber-600 rounded-lg hover:bg-amber-600 hover:text-white transition-all shadow-sm"><Edit size={14} /></button>
-                        <button onClick={() => handleDelete(item.id, item.nama)} className="p-1.5 bg-rose-100 text-rose-600 rounded-lg hover:bg-rose-600 hover:text-white transition-all shadow-sm"><Trash2 size={14} /></button>
+                        <button onClick={() => { setSelected(item); setMode('detail'); }} className="p-1.5 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-600"><Eye size={14} /></button>
+                        <button onClick={() => { setSelected(item); setFormData(item); setMode('edit'); }} className="p-1.5 bg-amber-100 text-amber-600 rounded-lg hover:bg-amber-600"><Edit size={14} /></button>
+                        <button onClick={() => handleDelete(item.id, item.nama)} className="p-1.5 bg-rose-100 text-rose-600 rounded-lg hover:bg-rose-600"><Trash2 size={14} /></button>
                       </div>
                     </td>
                   </tr>

@@ -54,6 +54,7 @@ const App: React.FC = () => {
       tempatBaptis: 'Gereja Pusat',
       pelayanan: 'Majelis',
       talenta: 'Menyanyi',
+      tanggalBergabung: '10/11/2020',
       foto: 'https://ui-avatars.com/api/?name=Amir&background=000&color=fff' 
     }
   ]);
@@ -166,14 +167,25 @@ const App: React.FC = () => {
       case 'kedukaan': return <Kedukaan onBack={() => setActiveMenu('dashboard')} />;
       case 'konseling': return <Konseling onBack={() => setActiveMenu('dashboard')} />;
       
+      // Reports
       case 'lap-ultah': return <LaporanUltah jemaatData={jemaatData} onBack={() => setActiveMenu('dashboard')} />;
       case 'lap-usia': return <LaporanUsia jemaatData={jemaatData} onBack={() => setActiveMenu('dashboard')} />;
-      case 'lap-usia-filter': return <LaporanUsiaFilter jemaatData={jemaatData} onBack={() => setActiveMenu('dashboard')} />;
+      case 'lap-usia-filter': return <LaporanUsiaFilter onBack={() => setActiveMenu('dashboard')} />;
       case 'lap-jk': return <LaporanGeneric type="Jenis Kelamin" jemaatData={jemaatData} churchInfo={churchInfo} onBack={() => setActiveMenu('dashboard')} />;
       case 'lap-talenta': return <LaporanGeneric type="Talenta" jemaatData={jemaatData} churchInfo={churchInfo} onBack={() => setActiveMenu('dashboard')} />;
       case 'lap-keluarga': return <LaporanGeneric type="Keluarga" jemaatData={jemaatData} churchInfo={churchInfo} onBack={() => setActiveMenu('dashboard')} />;
       case 'lap-pelayanan': return <LaporanGeneric type="Pelayanan" jemaatData={jemaatData} churchInfo={churchInfo} onBack={() => setActiveMenu('dashboard')} />;
       case 'lap-ibadah': return <LaporanGeneric type="Ibadah" jemaatData={jemaatData} churchInfo={churchInfo} onBack={() => setActiveMenu('dashboard')} />;
+      
+      // Commission Reports
+      case 'lap-komisi-sm': return <LaporanKomisi type="Pelayanan Anak & Remaja (SM)" onBack={() => setActiveMenu('dashboard')} />;
+      case 'lap-komisi-pemuda': return <LaporanKomisi type="Pelayanan Pemuda" onBack={() => setActiveMenu('dashboard')} />;
+      case 'lap-komisi-perkawan': return <LaporanKomisi type="Pelayanan Perempuan" onBack={() => setActiveMenu('dashboard')} />;
+      case 'lap-komisi-perkarya': return <LaporanKomisi type="Pelayanan Laki-laki (Perkarya)" onBack={() => setActiveMenu('dashboard')} />;
+      
+      // Financial/Asset Reports
+      case 'lap-keuangan': return <LaporanKeuanganReport onBack={() => setActiveMenu('dashboard')} />;
+      case 'lap-aset': return <LaporanAsetReport onBack={() => setActiveMenu('dashboard')} />;
       
       default:
         return (

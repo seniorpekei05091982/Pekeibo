@@ -35,7 +35,27 @@ const App: React.FC = () => {
   
   // Shared Global States
   const [jemaatData, setJemaatData] = useState<any[]>([
-    { id: '1', nomerJemaat: '000020', nomerKeluarga: '000001', nama: 'Amir', alamat: 'Jl. Rungkut Mejoyo 12345', jenisKelamin: 'Laki-Laki', tempatLahir: 'Surabaya', tanggalLahir: '08 Maret 1970', nomerHP: '08901234567', komsel: 'Paulus', status: 'Tetap', foto: 'https://ui-avatars.com/api/?name=Amir&background=000&color=fff' }
+    { 
+      id: '1', 
+      nomerJemaat: '000020', 
+      nomerKeluarga: '000001', 
+      nama: 'Amir', 
+      alamat: 'Jl. Rungkut Mejoyo 12345', 
+      jenisKelamin: 'Laki-Laki', 
+      tempatLahir: 'Surabaya', 
+      tanggalLahir: '1970-03-08', 
+      nomerHP: '08901234567', 
+      rayon: 'Rayon 1 Abepura', 
+      status: 'Tetap',
+      statusKawin: 'Sudah',
+      statusKeluarga: 'Kepala Keluarga',
+      baptis: 'Sudah',
+      pendetaBaptis: 'Pdt. Samuel',
+      tempatBaptis: 'Gereja Pusat',
+      pelayanan: 'Majelis',
+      talenta: 'Menyanyi',
+      foto: 'https://ui-avatars.com/api/?name=Amir&background=000&color=fff' 
+    }
   ]);
 
   const [jadwalData, setJadwalData] = useState<any[]>([
@@ -149,10 +169,13 @@ const App: React.FC = () => {
       case 'kedukaan': return <Kedukaan onBack={() => setActiveMenu('dashboard')} />;
       case 'konseling': return <Konseling onBack={() => setActiveMenu('dashboard')} />;
       
-      case 'lap-ultah': return <LaporanUltah onBack={() => setActiveMenu('dashboard')} />;
-      case 'lap-usia': return <LaporanUsia onBack={() => setActiveMenu('dashboard')} />;
-      case 'lap-usia-filter': return <LaporanUsiaFilter onBack={() => setActiveMenu('dashboard')} />;
-      case 'lap-jk': return <LaporanGeneric type="Jenis Kelamin" churchInfo={churchInfo} onBack={() => setActiveMenu('dashboard')} />;
+      case 'lap-ultah': return <LaporanUltah jemaatData={jemaatData} onBack={() => setActiveMenu('dashboard')} />;
+      case 'lap-usia': return <LaporanUsia jemaatData={jemaatData} onBack={() => setActiveMenu('dashboard')} />;
+      case 'lap-usia-filter': return <LaporanUsiaFilter jemaatData={jemaatData} onBack={() => setActiveMenu('dashboard')} />;
+      case 'lap-jk': return <LaporanGeneric type="Jenis Kelamin" jemaatData={jemaatData} churchInfo={churchInfo} onBack={() => setActiveMenu('dashboard')} />;
+      case 'lap-talenta': return <LaporanGeneric type="Talenta" jemaatData={jemaatData} churchInfo={churchInfo} onBack={() => setActiveMenu('dashboard')} />;
+      case 'lap-keluarga': return <LaporanGeneric type="Keluarga" jemaatData={jemaatData} churchInfo={churchInfo} onBack={() => setActiveMenu('dashboard')} />;
+      case 'lap-pelayanan': return <LaporanGeneric type="Pelayanan" jemaatData={jemaatData} churchInfo={churchInfo} onBack={() => setActiveMenu('dashboard')} />;
       
       default:
         return (

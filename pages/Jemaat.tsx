@@ -3,7 +3,7 @@ import React, { useState, useMemo } from 'react';
 import { 
   Plus, Search, Edit, Eye, Trash2, Printer, ArrowLeft, 
   User, MapPin, Phone, Mail, Calendar, 
-  Users, CheckCircle2, RotateCcw, Camera, Home
+  Users, CheckCircle2, RotateCcw, Camera, Home, Heart, ShieldCheck, Star, Briefcase
 } from 'lucide-react';
 import { TopStatsBar } from '../components/TopStatsBar';
 
@@ -17,10 +17,16 @@ interface JemaatData {
   tempatLahir: string;
   tanggalLahir: string;
   nomerHP: string;
-  komsel: string;
+  rayon: string;
   foto?: string;
-  statusKeluarga?: string;
-  status?: string;
+  statusKeluarga: string;
+  statusKawin: string;
+  status: string;
+  baptis: 'Belum' | 'Sudah';
+  pendetaBaptis?: string;
+  tempatBaptis?: string;
+  pelayanan?: string;
+  talenta?: string;
 }
 
 interface JemaatProps {
@@ -63,13 +69,20 @@ export const Jemaat: React.FC<JemaatProps> = ({ menuId, onBack, churchInfo, data
         tempatLahir: formData.tempatLahir || '',
         tanggalLahir: formData.tanggalLahir || '',
         nomerHP: formData.nomerHP || '',
-        komsel: formData.komsel || 'Petrus',
+        rayon: formData.rayon || 'Rayon 1 Abepura',
+        statusKeluarga: formData.statusKeluarga || 'Kepala Keluarga',
+        statusKawin: formData.statusKawin || 'Belum',
+        baptis: formData.baptis || 'Belum',
+        pendetaBaptis: formData.pendetaBaptis || '',
+        tempatBaptis: formData.tempatBaptis || '',
+        pelayanan: formData.pelayanan || '',
+        talenta: formData.talenta || '',
         status: 'Tetap',
         foto: formData.foto || `https://ui-avatars.com/api/?name=${encodeURIComponent(formData.nama || '')}&background=random`
       };
       setData([newItem, ...data]);
     } else if (mode === 'edit' && selected) {
-      setData(data.map(item => item.id === selected.id ? { ...item, ...formData } : item));
+      setData(data.map(item => item.id === selected.id ? { ...item, ...formData } : item as JemaatData));
     }
     
     setMode('list');
@@ -108,7 +121,7 @@ export const Jemaat: React.FC<JemaatProps> = ({ menuId, onBack, churchInfo, data
                 </div>
                 <div className="text-right">
                   <h2 className="text-lg font-bold text-slate-900 uppercase tracking-widest mb-1">KARTU JEMAAT</h2>
-                  <p className="text-xs font-bold text-slate-500 uppercase">Status: Aktif</p>
+                  <p className="text-xs font-bold text-slate-500 uppercase">Status: {selected?.status}</p>
                 </div>
              </div>
 
@@ -123,9 +136,13 @@ export const Jemaat: React.FC<JemaatProps> = ({ menuId, onBack, churchInfo, data
                     ['Nomer Keluarga', selected?.nomerKeluarga],
                     ['Jenis Kelamin', selected?.jenisKelamin],
                     ['TTL', `${selected?.tempatLahir}, ${selected?.tanggalLahir}`],
+                    ['Status Kawin', selected?.statusKawin],
+                    ['Status Keluarga', selected?.statusKeluarga],
+                    ['Rayon', selected?.rayon],
                     ['Alamat', selected?.alamat],
-                    ['Nomer HP', selected?.nomerHP],
-                    ['Komsel', selected?.komsel],
+                    ['Baptis', selected?.baptis],
+                    ['Pelayanan', selected?.pelayanan],
+                    ['Talenta', selected?.talenta],
                   ].map(([label, val], idx) => (
                     <div key={idx} className="flex border-b border-slate-200 py-1 items-baseline">
                       <span className="w-32 font-bold text-slate-800 text-[11px] uppercase tracking-tight">{label}</span>
@@ -164,25 +181,29 @@ export const Jemaat: React.FC<JemaatProps> = ({ menuId, onBack, churchInfo, data
         </button>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden max-w-5xl">
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden max-w-6xl mx-auto">
         <div className="p-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
+            {/* Kolom 1: Data Identitas */}
             <div className="space-y-5">
+              <h3 className="text-xs font-black text-blue-600 uppercase tracking-widest flex items-center gap-2 border-b pb-2"><User size={14}/> Identitas Jemaat</h3>
               <FormField label="Nama Lengkap" required>
-                <input 
-                  type="text" 
-                  className="form-input" 
-                  value={formData.nama || ''} 
-                  onChange={e => setFormData({...formData, nama: e.target.value})}
-                  placeholder="Masukkan nama lengkap" 
-                />
+                <input type="text" className="form-input" value={formData.nama || ''} onChange={e => setFormData({...formData, nama: e.target.value})} placeholder="Masukkan nama lengkap" />
               </FormField>
               <div className="grid grid-cols-2 gap-4">
                 <FormField label="Nomer Anggota" required>
-                  <input type="text" className="form-input" value={formData.nomerJemaat || ''} onChange={e => setFormData({...formData, nomerJemaat: e.target.value})} placeholder="Contoh: 0001" />
+                  <input type="text" className="form-input" value={formData.nomerJemaat || ''} onChange={e => setFormData({...formData, nomerJemaat: e.target.value})} placeholder="0001" />
                 </FormField>
                 <FormField label="Nomer Keluarga">
                   <input type="text" className="form-input" value={formData.nomerKeluarga || ''} onChange={e => setFormData({...formData, nomerKeluarga: e.target.value})} placeholder="Opsional" />
+                </FormField>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <FormField label="Tempat Lahir">
+                  <input type="text" className="form-input" value={formData.tempatLahir || ''} onChange={e => setFormData({...formData, tempatLahir: e.target.value})} />
+                </FormField>
+                <FormField label="Tanggal Lahir">
+                  <input type="date" className="form-input" value={formData.tanggalLahir || ''} onChange={e => setFormData({...formData, tanggalLahir: e.target.value})} />
                 </FormField>
               </div>
               <FormField label="Jenis Kelamin">
@@ -192,23 +213,72 @@ export const Jemaat: React.FC<JemaatProps> = ({ menuId, onBack, churchInfo, data
                 </select>
               </FormField>
             </div>
+
+            {/* Kolom 2: Status & Lokasi */}
             <div className="space-y-5">
-              <FormField label="Alamat Rumah">
-                <textarea rows={3} className="form-input" value={formData.alamat || ''} onChange={e => setFormData({...formData, alamat: e.target.value})} placeholder="Alamat lengkap"></textarea>
-              </FormField>
-              <FormField label="Lingkungan / Komsel">
-                <select className="form-input" value={formData.komsel || 'Petrus'} onChange={e => setFormData({...formData, komsel: e.target.value})}>
-                  <option value="Petrus">Petrus</option>
-                  <option value="Paulus">Paulus</option>
-                  <option value="Abraham">Abraham</option>
+              <h3 className="text-xs font-black text-blue-600 uppercase tracking-widest flex items-center gap-2 border-b pb-2"><Heart size={14}/> Status & Keluarga</h3>
+              <FormField label="Status Kawin">
+                <select className="form-input" value={formData.statusKawin || 'Belum'} onChange={e => setFormData({...formData, statusKawin: e.target.value})}>
+                  {['Belum', 'Sudah', 'Cerai', 'Duda', 'Janda', 'Yatim Piatu'].map(v => <option key={v} value={v}>{v}</option>)}
                 </select>
+              </FormField>
+              <FormField label="Status Keluarga">
+                <select className="form-input" value={formData.statusKeluarga || 'Kepala Keluarga'} onChange={e => setFormData({...formData, statusKeluarga: e.target.value})}>
+                  {['Kepala Keluarga', 'Istri', 'Anak', 'Famili lain'].map(v => <option key={v} value={v}>{v}</option>)}
+                </select>
+              </FormField>
+              <FormField label="Rayon">
+                <select className="form-input" value={formData.rayon || 'Rayon 1 Abepura'} onChange={e => setFormData({...formData, rayon: e.target.value})}>
+                  <option value="Rayon 1 Abepura">Rayon 1 Abepura</option>
+                  <option value="Rayon 2 Sentani Waena">Rayon 2 Sentani Waena</option>
+                </select>
+              </FormField>
+              <FormField label="Alamat Rumah">
+                <textarea rows={2} className="form-input" value={formData.alamat || ''} onChange={e => setFormData({...formData, alamat: e.target.value})} placeholder="Alamat lengkap"></textarea>
+              </FormField>
+              <FormField label="Nomer HP">
+                 <input type="text" className="form-input" value={formData.nomerHP || ''} onChange={e => setFormData({...formData, nomerHP: e.target.value})} placeholder="08xxxx" />
+              </FormField>
+            </div>
+
+            {/* Kolom 3: Rohani & Bakat */}
+            <div className="space-y-5">
+              <h3 className="text-xs font-black text-blue-600 uppercase tracking-widest flex items-center gap-2 border-b pb-2"><ShieldCheck size={14}/> Data Rohani & Bakat</h3>
+              <FormField label="Sudah Baptis?">
+                <select className="form-input" value={formData.baptis || 'Belum'} onChange={e => setFormData({...formData, baptis: e.target.value as any})}>
+                  <option value="Belum">Belum</option>
+                  <option value="Sudah">Sudah</option>
+                </select>
+              </FormField>
+              {formData.baptis === 'Sudah' && (
+                <div className="space-y-4 animate-in fade-in slide-in-from-top-2">
+                  <FormField label="Pendeta Pembaptis">
+                    <input type="text" className="form-input" value={formData.pendetaBaptis || ''} onChange={e => setFormData({...formData, pendetaBaptis: e.target.value})} placeholder="Nama Pendeta" />
+                  </FormField>
+                  <FormField label="Tempat Dibaptis">
+                    <input type="text" className="form-input" value={formData.tempatBaptis || ''} onChange={e => setFormData({...formData, tempatBaptis: e.target.value})} placeholder="Nama Gereja/Tempat" />
+                  </FormField>
+                </div>
+              )}
+              <FormField label="Pelayanan">
+                <div className="flex gap-2">
+                   <Briefcase size={16} className="text-slate-400 mt-2 shrink-0" />
+                   <input type="text" className="form-input" value={formData.pelayanan || ''} onChange={e => setFormData({...formData, pelayanan: e.target.value})} placeholder="Contoh: Song Leader, Multimedia" />
+                </div>
+              </FormField>
+              <FormField label="Talenta">
+                <div className="flex gap-2">
+                   <Star size={16} className="text-slate-400 mt-2 shrink-0" />
+                   <input type="text" className="form-input" value={formData.talenta || ''} onChange={e => setFormData({...formData, talenta: e.target.value})} placeholder="Contoh: Bermain Musik, Desain" />
+                </div>
               </FormField>
             </div>
           </div>
+          
           <div className="mt-12 pt-6 border-t border-slate-100 flex justify-end gap-3">
              <button onClick={() => setMode('list')} className="px-6 py-2 bg-slate-100 text-slate-600 rounded text-xs font-bold flex items-center gap-2">Batal</button>
-             <button onClick={handleSave} className="px-10 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs font-black uppercase tracking-widest flex items-center gap-2 shadow-lg">
-                <CheckCircle2 size={14} /> Simpan Data
+             <button onClick={handleSave} className="px-10 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs font-black uppercase tracking-widest flex items-center gap-2 shadow-lg transition-all active:scale-95">
+                <CheckCircle2 size={14} /> Simpan Data Jemaat
              </button>
           </div>
         </div>
@@ -221,41 +291,68 @@ export const Jemaat: React.FC<JemaatProps> = ({ menuId, onBack, churchInfo, data
       <TopStatsBar jemaatCount={data.length} />
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-xl font-bold text-slate-800 flex items-center gap-2 uppercase tracking-tighter">
-           <User className="text-blue-600" /> Profil Jemaat
+           <User className="text-blue-600" /> Profil Jemaat Lengkap
         </h1>
         <button onClick={() => setMode('list')} className="bg-slate-700 text-white px-4 py-2 rounded text-xs font-bold flex items-center gap-2">
           <ArrowLeft size={14} /> Kembali
         </button>
       </div>
-      <div className="bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden max-w-4xl mx-auto">
-        <div className="h-32 bg-blue-600 relative">
-           <div className="absolute -bottom-16 left-10">
-              <div className="w-32 h-32 rounded-2xl bg-white p-1 shadow-2xl border border-slate-100 overflow-hidden">
+      <div className="bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden max-w-5xl mx-auto">
+        <div className="h-40 bg-gradient-to-r from-blue-700 to-blue-500 relative">
+           <div className="absolute -bottom-20 left-10">
+              <div className="w-40 h-40 rounded-2xl bg-white p-1.5 shadow-2xl border border-slate-100 overflow-hidden">
                  <img src={selected?.foto} alt="Profile" className="w-full h-full object-cover rounded-xl" />
               </div>
            </div>
+           <div className="absolute top-4 right-4 flex gap-2">
+              <button onClick={() => { setFormData(selected || {}); setMode('edit'); }} className="bg-white/20 hover:bg-white/40 text-white p-2 rounded-lg backdrop-blur-md transition-all"><Edit size={18} /></button>
+              <button onClick={() => setMode('print')} className="bg-white/20 hover:bg-white/40 text-white p-2 rounded-lg backdrop-blur-md transition-all"><Printer size={18} /></button>
+           </div>
         </div>
-        <div className="pt-20 px-10 pb-10">
-          <div className="flex justify-between items-start mb-10">
+        <div className="pt-24 px-10 pb-12">
+          <div className="flex justify-between items-start mb-12">
              <div>
-                <h2 className="text-3xl font-black text-slate-800 tracking-tighter uppercase">{selected?.nama}</h2>
-                <p className="text-blue-600 font-bold text-sm uppercase tracking-widest">{selected?.nomerJemaat} • AKTIF</p>
+                <h2 className="text-4xl font-black text-slate-800 tracking-tighter uppercase leading-none">{selected?.nama}</h2>
+                <div className="flex gap-2 mt-3">
+                  <span className="bg-blue-100 text-blue-700 px-3 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest">{selected?.nomerJemaat}</span>
+                  <span className="bg-emerald-100 text-emerald-700 px-3 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest">{selected?.status}</span>
+                </div>
              </div>
-             <div className="flex gap-2">
-                <button onClick={() => { setFormData(selected || {}); setMode('edit'); }} className="p-2 bg-amber-100 text-amber-600 rounded-lg hover:bg-amber-200"><Edit size={18} /></button>
-                <button onClick={() => setMode('print')} className="p-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200"><Printer size={18} /></button>
+             <div className="text-right">
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Rayon Pelayanan</p>
+                <p className="text-lg font-bold text-blue-600 uppercase tracking-tighter">{selected?.rayon}</p>
              </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
              <div className="space-y-6">
-                <DetailItem icon={<MapPin size={16}/>} label="Alamat Rumah" value={selected?.alamat} />
-                <DetailItem icon={<Phone size={16}/>} label="Kontak" value={selected?.nomerHP} />
-                <DetailItem icon={<Users size={16}/>} label="Komsel" value={selected?.komsel} />
+                <DetailItem icon={<MapPin size={16}/>} label="Alamat Domisili" value={selected?.alamat} />
+                <DetailItem icon={<Phone size={16}/>} label="Nomer Handphone" value={selected?.nomerHP} />
+                <DetailItem icon={<Calendar size={16}/>} label="Tempat, Tgl Lahir" value={`${selected?.tempatLahir}, ${selected?.tanggalLahir}`} />
              </div>
              <div className="space-y-6">
-                <DetailItem icon={<Calendar size={16}/>} label="Tempat, Tgl Lahir" value={`${selected?.tempatLahir}, ${selected?.tanggalLahir}`} />
-                <DetailItem icon={<User size={16}/>} label="Gender" value={selected?.jenisKelamin} />
-                <DetailItem icon={<Mail size={16}/>} label="No. Keluarga" value={selected?.nomerKeluarga} />
+                <DetailItem icon={<Heart size={16}/>} label="Status Kawin" value={selected?.statusKawin} />
+                <DetailItem icon={<Users size={16}/>} label="Hubungan Keluarga" value={selected?.statusKeluarga} />
+                <DetailItem icon={<Mail size={16}/>} label="Nomer Keluarga" value={selected?.nomerKeluarga} />
+             </div>
+             <div className="space-y-6">
+                <DetailItem icon={<ShieldCheck size={16}/>} label="Status Baptis" value={selected?.baptis} highlight={selected?.baptis === 'Sudah'} />
+                {selected?.baptis === 'Sudah' && (
+                  <>
+                    <DetailItem icon={<User size={14}/>} label="Pendeta Pembaptis" value={selected?.pendetaBaptis} />
+                    <DetailItem icon={<Home size={14}/>} label="Tempat Baptis" value={selected?.tempatBaptis} />
+                  </>
+                )}
+                <div className="p-4 bg-slate-50 rounded-xl border border-slate-100 flex gap-4">
+                  <div className="flex-1">
+                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Pelayanan</p>
+                    <p className="text-xs font-bold text-slate-700">{selected?.pelayanan || '-'}</p>
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Talenta</p>
+                    <p className="text-xs font-bold text-slate-700">{selected?.talenta || '-'}</p>
+                  </div>
+                </div>
              </div>
           </div>
         </div>
@@ -281,7 +378,7 @@ export const Jemaat: React.FC<JemaatProps> = ({ menuId, onBack, churchInfo, data
           <h2 className="text-sm font-bold text-slate-700">Database Jemaat Aktif</h2>
           <div className="flex gap-2">
             <button 
-              onClick={() => { setFormData({ jenisKelamin: 'Laki-Laki', komsel: 'Petrus' }); setMode('add'); }} 
+              onClick={() => { setFormData({ jenisKelamin: 'Laki-Laki', rayon: 'Rayon 1 Abepura' }); setMode('add'); }} 
               className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-xs font-bold flex items-center gap-2 shadow-md transition-all active:scale-95"
             >
               <Plus size={16} /> Tambah Jemaat
@@ -300,11 +397,6 @@ export const Jemaat: React.FC<JemaatProps> = ({ menuId, onBack, churchInfo, data
                  placeholder="Cari jemaat..." 
               />
             </div>
-            <div className="flex gap-1">
-               {['Excel', 'PDF', 'Printer'].map(btn => (
-                 <button key={btn} className="px-3 py-1 bg-slate-500 hover:bg-slate-600 text-white text-[10px] font-bold rounded shadow-sm transition-all">{btn}</button>
-               ))}
-            </div>
           </div>
 
           <div className="overflow-x-auto">
@@ -314,7 +406,8 @@ export const Jemaat: React.FC<JemaatProps> = ({ menuId, onBack, churchInfo, data
                   <th className="px-4 py-3 border-r border-slate-200 text-center w-12">#</th>
                   <th className="px-4 py-3 border-r border-slate-200">Nama Lengkap</th>
                   <th className="px-4 py-3 border-r border-slate-200">No. Jemaat</th>
-                  <th className="px-4 py-3 border-r border-slate-200">Komsel</th>
+                  <th className="px-4 py-3 border-r border-slate-200">Rayon</th>
+                  <th className="px-4 py-3 border-r border-slate-200">Talenta</th>
                   <th className="px-4 py-3 text-center">Aksi</th>
                 </tr>
               </thead>
@@ -324,7 +417,8 @@ export const Jemaat: React.FC<JemaatProps> = ({ menuId, onBack, churchInfo, data
                     <td className="px-4 py-4 border-r border-slate-200 text-center text-slate-500 font-medium">{idx + 1}.</td>
                     <td className="px-4 py-4 border-r border-slate-200 font-bold text-slate-800 uppercase">{item.nama}</td>
                     <td className="px-4 py-4 border-r border-slate-200 font-medium text-blue-600">{item.nomerJemaat}</td>
-                    <td className="px-4 py-4 border-r border-slate-200 font-bold text-slate-500">{item.komsel}</td>
+                    <td className="px-4 py-4 border-r border-slate-200 font-bold text-slate-500">{item.rayon}</td>
+                    <td className="px-4 py-4 border-r border-slate-200 font-medium text-slate-600">{item.talenta || '-'}</td>
                     <td className="px-4 py-4 text-center">
                       <div className="flex justify-center gap-1">
                         <button onClick={() => { setSelected(item); setMode('detail'); }} className="p-1.5 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-600"><Eye size={14} /></button>
@@ -346,7 +440,7 @@ export const Jemaat: React.FC<JemaatProps> = ({ menuId, onBack, churchInfo, data
   return (
     <div className="animate-in fade-in duration-500 h-full">
       <style>{`
-        .form-input { @apply w-full px-3 py-2 text-xs border border-slate-200 rounded bg-slate-50/50 outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all; }
+        .form-input { @apply w-full px-3 py-2 text-xs border border-slate-200 rounded bg-slate-50 outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all; }
       `}</style>
       {mode === 'list' && renderListView()}
       {mode === 'print' && renderPrintView()}
@@ -365,14 +459,14 @@ const FormField: React.FC<{ label: string; children: React.ReactNode; required?:
   </div>
 );
 
-const DetailItem = ({ icon, label, value }: any) => (
+const DetailItem = ({ icon, label, value, highlight }: any) => (
   <div className="flex items-start gap-3">
-    <div className="p-2 bg-slate-50 text-blue-500 rounded-lg shrink-0">
+    <div className={`p-2 rounded-lg shrink-0 ${highlight ? 'bg-blue-600 text-white' : 'bg-slate-50 text-blue-500'}`}>
       {icon}
     </div>
     <div>
       <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{label}</p>
-      <p className="text-sm font-bold text-slate-700">{value || '-'}</p>
+      <p className="text-sm font-bold text-slate-700 leading-tight">{value || '-'}</p>
     </div>
   </div>
 );

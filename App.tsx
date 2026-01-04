@@ -86,14 +86,14 @@ const App: React.FC = () => {
   });
 
   const [adminInfo, setAdminInfo] = useState({
-    name: 'Admin User',
+    name: 'Yunus Kogoya',
     username: 'admin',
     gender: 'Laki-Laki',
-    photo: 'https://ui-avatars.com/api/?name=Admin+User&background=334155&color=fff'
+    photo: 'https://ui-avatars.com/api/?name=Yunus+Kogoya&background=334155&color=fff'
   });
 
   const handleLogout = () => {
-    const confirmLogout = window.confirm('Apakah Anda yakin ingin keluar dari sistem?');
+    const confirmLogout = window.confirm('Apakah Anda yakin ingin keluar dari sistem keamanan?');
     if (confirmLogout) {
       setIsLoggedIn(false);
       setActiveMenu('dashboard');
@@ -189,28 +189,30 @@ const App: React.FC = () => {
       
       default:
         return (
-          <div className="p-8 text-center py-20 bg-white m-6 rounded-xl border border-slate-200 shadow-sm">
-            <h2 className="text-xl font-bold text-slate-700 mb-2">Modul "{activeMenu}"</h2>
-            <p className="text-slate-500 text-sm">Halaman sedang dalam pengembangan.</p>
-            <button onClick={() => setActiveMenu('dashboard')} className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm">Kembali ke Dashboard</button>
+          <div className="p-12 text-center py-24 bg-white m-10 rounded-[3rem] border border-slate-100 shadow-2xl">
+            <h2 className="text-3xl font-black text-slate-800 mb-4 tracking-tighter uppercase">Section Encrypted</h2>
+            <p className="text-slate-400 text-sm font-bold uppercase tracking-widest mb-10">This module "{activeMenu}" is currently under construction.</p>
+            <button onClick={() => setActiveMenu('dashboard')} className="px-10 py-4 bg-slate-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.4em] shadow-xl hover:bg-blue-600 transition-colors">Return to Base</button>
           </div>
         );
     }
   };
 
   return (
-    <div className="flex h-screen overflow-hidden bg-slate-100 font-inter">
-      <aside className="hidden lg:block shrink-0">
+    <div className="flex h-screen overflow-hidden bg-slate-50 font-inter">
+      <aside className="hidden lg:block shrink-0 z-40">
         <Sidebar onSelect={handleMenuSelect} activeId={activeMenu} churchInfo={churchInfo} adminInfo={adminInfo} />
       </aside>
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
         <Header adminInfo={adminInfo} />
-        <main className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-300">
-          {renderContent()}
-          <footer className="p-6 text-[11px] text-slate-400 flex flex-col sm:flex-row justify-between items-center border-t border-slate-200 mt-auto bg-white/50">
-            <span>Copyright &copy; 2024 <strong className="text-slate-500 font-bold">GEREJA KINGMI PAPUA</strong> | Era Sistem Media. All rights reserved.</span>
-            <span className="mt-2 sm:mt-0 font-semibold text-rose-600 uppercase tracking-tighter">Sistem Informasi Gereja Version 2.0</span>
-          </footer>
+        <main className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 p-2 md:p-4">
+          <div className="max-w-[1600px] mx-auto min-h-full flex flex-col">
+            {renderContent()}
+            <footer className="px-8 py-10 text-[10px] text-slate-300 flex flex-col sm:flex-row justify-between items-center border-t border-slate-100 mt-auto bg-white/30 backdrop-blur-sm rounded-t-[3rem]">
+              <span className="font-bold tracking-widest">© 2024 <strong className="text-slate-900 font-black">KINGMI PAPUA</strong> / ERA SISTEM MEDIA.</span>
+              <span className="mt-4 sm:mt-0 font-black text-blue-600 uppercase tracking-[0.3em] bg-blue-50 px-4 py-1.5 rounded-full">SIM GEREJA PRO VERSION 2.0.1</span>
+            </footer>
+          </div>
         </main>
       </div>
     </div>

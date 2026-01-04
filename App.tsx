@@ -105,12 +105,10 @@ const App: React.FC = () => {
   });
 
   const handleLogout = () => {
-    // Meminta konfirmasi sebelum keluar untuk keamanan
     const confirmLogout = window.confirm('Apakah Anda yakin ingin keluar dari sistem SIM GEREJA KINGMI PAPUA?');
     if (confirmLogout) {
       setIsLoggedIn(false);
       setActiveMenu('dashboard');
-      // Sesi akan ditutup dan komponen Login akan ditampilkan kembali
     }
   };
 
@@ -162,9 +160,9 @@ const App: React.FC = () => {
       case 'profile-user':
         return <ProfileUser adminInfo={adminInfo} setAdminInfo={setAdminInfo} onBack={() => setActiveMenu('dashboard')} />;
       case 'profile-gereja':
-        return <ProfileGereja churchData={churchInfo} setChurchData={setChurchInfo} onBack={() => setActiveMenu('dashboard')} />;
+        return <ProfileGereja churchData={churchInfo} setChurchData={setChurchInfo} onBack={() => setActiveMenu('dashboard')} userRole={userRole} />;
       case 'users':
-        return <Users onBack={() => setActiveMenu('dashboard')} />;
+        return <Users onBack={() => setActiveMenu('dashboard')} userRole={userRole} />;
       case 'backup':
         return <BackupData onBack={() => setActiveMenu('dashboard')} />;
       case 'penyerahan': return <PenyerahanAnak onBack={() => setActiveMenu('dashboard')} />;

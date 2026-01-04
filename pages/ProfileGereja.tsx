@@ -2,9 +2,10 @@
 import React, { useState } from 'react';
 import { 
   Edit, ArrowLeft, RotateCcw, CheckCircle2, 
-  Church, ChevronDown, Camera
+  Church, ChevronDown, Camera, ShieldAlert
 } from 'lucide-react';
 import { TopStatsBar } from '../components/TopStatsBar';
+import { UserRole } from '../types';
 
 interface ChurchData {
   nama: string;
@@ -21,21 +22,25 @@ interface ProfileGerejaProps {
   churchData: ChurchData;
   setChurchData: React.Dispatch<React.SetStateAction<ChurchData>>;
   onBack: () => void;
+  userRole: UserRole;
 }
 
-export const ProfileGereja: React.FC<ProfileGerejaProps> = ({ churchData, setChurchData, onBack }) => {
+export const ProfileGereja: React.FC<ProfileGerejaProps> = ({ churchData, setChurchData, onBack, userRole }) => {
   const [mode, setMode] = useState<'list' | 'edit'>('list');
   const [activeTab, setActiveTab] = useState('Data');
   const [tempData, setTempData] = useState(churchData);
 
+  const isSinode = userRole === 'Sinode';
+
   const handleSave = () => {
+    if (!isSinode) return;
     setChurchData(tempData);
     setMode('list');
     alert('Informasi Gereja berhasil diperbarui dan disinkronkan ke seluruh sistem!');
   };
 
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
+    if (isSinode && e.target.files && e.target.files[0]) {
       setTempData({ ...tempData, logo: URL.createObjectURL(e.target.files[0]) });
     }
   };
@@ -59,6 +64,15 @@ export const ProfileGereja: React.FC<ProfileGerejaProps> = ({ churchData, setChu
         <TopStatsBar />
         {renderTopNav('Profil Gereja')}
         
+        {!isSinode && (
+          <div className="bg-amber-50 border border-amber-200 p-4 rounded-xl flex items-center gap-4 mb-4">
+            <div className="w-10 h-10 rounded-full bg-amber-500 flex items-center justify-center text-white shrink-0">
+               <ShieldAlert size={20} />
+            </div>
+            <p className="text-xs font-bold text-amber-700 uppercase tracking-tight">Mode Pratinjau: Hanya Admin Sinode yang dapat mengubah profil institusi pusat.</p>
+          </div>
+        )}
+
         <div className="bg-white rounded shadow-sm border border-slate-200 overflow-hidden">
           <div className="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50/50">
             <h2 className="text-sm font-bold text-slate-700">Identitas Resmi Gereja</h2>
@@ -74,7 +88,7 @@ export const ProfileGereja: React.FC<ProfileGerejaProps> = ({ churchData, setChu
                     <th className="px-3 py-3 border-r border-slate-200 text-center">Telepon</th>
                     <th className="px-3 py-3 border-r border-slate-200 text-center">Email</th>
                     <th className="px-3 py-3 border-r border-slate-200 text-center">Logo</th>
-                    <th className="px-3 py-3 text-center">Aksi</th>
+                    {isSinode && <th className="px-3 py-3 text-center">Aksi</th>}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -88,14 +102,16 @@ export const ProfileGereja: React.FC<ProfileGerejaProps> = ({ churchData, setChu
                          <img src={churchData.logo} alt="Logo" className="w-full h-full object-cover rounded-full" />
                       </div>
                     </td>
-                    <td className="px-3 py-6 text-center">
-                      <button 
-                        onClick={() => { setTempData(churchData); setMode('edit'); }}
-                        className="p-1.5 bg-amber-400 hover:bg-amber-500 text-white rounded shadow-sm transition-all"
-                      >
-                        <Edit size={14} />
-                      </button>
-                    </td>
+                    {isSinode && (
+                      <td className="px-3 py-6 text-center">
+                        <button 
+                          onClick={() => { setTempData(churchData); setMode('edit'); }}
+                          className="p-1.5 bg-amber-400 hover:bg-amber-500 text-white rounded shadow-sm transition-all"
+                        >
+                          <Edit size={14} />
+                        </button>
+                      </td>
+                    )}
                   </tr>
                 </tbody>
               </table>
@@ -125,11 +141,13 @@ export const ProfileGereja: React.FC<ProfileGerejaProps> = ({ churchData, setChu
              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Logo Gereja</p>
              <div className="w-48 h-48 rounded-full border-4 border-slate-100 shadow-xl overflow-hidden relative group">
                 <img src={tempData.logo} alt="Logo Preview" className="w-full h-full object-cover" />
-                <label className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity">
-                   <Camera className="text-white mb-1" size={24} />
-                   <span className="text-white text-[9px] font-bold uppercase">Unggah Logo</span>
-                   <input type="file" className="hidden" accept="image/*" onChange={handleLogoChange} />
-                </label>
+                {isSinode && (
+                  <label className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity">
+                     <Camera className="text-white mb-1" size={24} />
+                     <span className="text-white text-[9px] font-bold uppercase">Unggah Logo</span>
+                     <input type="file" className="hidden" accept="image/*" onChange={handleLogoChange} />
+                  </label>
+                )}
              </div>
              <p className="mt-4 text-[10px] text-slate-400 italic text-center leading-tight">Gunakan gambar resolusi tinggi (PNG/JPG) untuk hasil cetak laporan terbaik.</p>
           </div>
@@ -145,8 +163,9 @@ export const ProfileGereja: React.FC<ProfileGerejaProps> = ({ churchData, setChu
                 <input 
                   type="text" 
                   value={tempData.nama} 
+                  readOnly={!isSinode}
                   onChange={e => setTempData({...tempData, nama: e.target.value})}
-                  className="form-input font-bold text-slate-800" 
+                  className={`form-input font-bold text-slate-800 ${!isSinode ? 'bg-slate-50 cursor-not-allowed' : ''}`} 
                   placeholder="Gereja Kemah Injil (KINGMI) Di Tanah Papua" 
                 />
               </FormField>
@@ -154,7 +173,8 @@ export const ProfileGereja: React.FC<ProfileGerejaProps> = ({ churchData, setChu
               <FormField label="Alamat Resmi">
                 <textarea 
                   rows={4} 
-                  className="form-input" 
+                  readOnly={!isSinode}
+                  className={`form-input ${!isSinode ? 'bg-slate-50 cursor-not-allowed' : ''}`} 
                   value={tempData.alamat} 
                   onChange={e => setTempData({...tempData, alamat: e.target.value})}
                 ></textarea>
@@ -162,25 +182,27 @@ export const ProfileGereja: React.FC<ProfileGerejaProps> = ({ churchData, setChu
 
               <div className="grid grid-cols-2 gap-4">
                 <FormField label="Telepon Kantor">
-                  <input type="text" className="form-input" value={tempData.telp} onChange={e => setTempData({...tempData, telp: e.target.value})} />
+                  <input type="text" className={`form-input ${!isSinode ? 'bg-slate-50 cursor-not-allowed' : ''}`} readOnly={!isSinode} value={tempData.telp} onChange={e => setTempData({...tempData, telp: e.target.value})} />
                 </FormField>
                 <FormField label="Email Resmi">
-                  <input type="email" className="form-input" value={tempData.email} onChange={e => setTempData({...tempData, email: e.target.value})} />
+                  <input type="email" className={`form-input ${!isSinode ? 'bg-slate-50 cursor-not-allowed' : ''}`} readOnly={!isSinode} value={tempData.email} onChange={e => setTempData({...tempData, email: e.target.value})} />
                 </FormField>
               </div>
 
               <FormField label="Nama Gembala / Pimpinan">
-                <input type="text" className="form-input" value={tempData.gembala} onChange={e => setTempData({...tempData, gembala: e.target.value})} />
+                <input type="text" className={`form-input ${!isSinode ? 'bg-slate-50 cursor-not-allowed' : ''}`} readOnly={!isSinode} value={tempData.gembala} onChange={e => setTempData({...tempData, gembala: e.target.value})} />
               </FormField>
 
-              <div className="flex gap-2 pt-10 border-t border-slate-100">
-                <button onClick={handleSave} className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2 rounded text-xs font-bold flex items-center gap-2 shadow-lg transition-all active:scale-95">
-                  <CheckCircle2 size={16} /> Simpan & Sinkronisasi
-                </button>
-                <button onClick={() => setTempData(churchData)} className="bg-slate-200 text-slate-600 px-8 py-2 rounded text-xs font-bold flex items-center gap-2">
-                  <RotateCcw size={16} /> Reset
-                </button>
-              </div>
+              {isSinode && (
+                <div className="flex gap-2 pt-10 border-t border-slate-100">
+                  <button onClick={handleSave} className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2 rounded text-xs font-bold flex items-center gap-2 shadow-lg transition-all active:scale-95">
+                    <CheckCircle2 size={16} /> Simpan & Sinkronisasi
+                  </button>
+                  <button onClick={() => setTempData(churchData)} className="bg-slate-200 text-slate-600 px-8 py-2 rounded text-xs font-bold flex items-center gap-2">
+                    <RotateCcw size={16} /> Reset
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>

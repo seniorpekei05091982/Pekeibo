@@ -4,6 +4,7 @@ import { Sidebar } from './components/Sidebar';
 import { Header } from './components/Header';
 import Dashboard from './pages/Dashboard';
 import { PenyerahanAnak } from './pages/PenyerahanAnak';
+import { Katekisasi } from './pages/Katekisasi';
 import { UserPlus, Trash2, Mail, Phone, MapPin, User as UserIcon, Save } from 'lucide-react';
 
 interface JemaatEntry {
@@ -56,6 +57,8 @@ const App: React.FC = () => {
         return <Dashboard />;
       case 'penyerahan':
         return <PenyerahanAnak />;
+      case 'katekisasi':
+        return <Katekisasi />;
       case 'jemaat':
         return (
           <div className="p-6 max-w-6xl mx-auto space-y-8 animate-in slide-in-from-bottom-4 duration-500">

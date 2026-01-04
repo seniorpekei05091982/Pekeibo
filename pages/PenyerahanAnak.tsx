@@ -7,6 +7,30 @@ import {
 } from 'lucide-react';
 import { TopStatsBar } from '../components/TopStatsBar';
 
+// Fixed: Moved helper components to the top and added proper React.FC typing to handle children
+const UserPlusIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-600">
+    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/>
+  </svg>
+);
+
+interface FormFieldProps {
+  label: string;
+  children: React.ReactNode;
+  required?: boolean;
+}
+
+const FormField: React.FC<FormFieldProps> = ({ label, children, required }) => (
+  <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+    <label className="sm:w-32 text-xs font-bold text-slate-700">
+      {label}{required && <span className="text-rose-500 ml-1">*</span>}
+    </label>
+    <div className="flex-1">
+      {children}
+    </div>
+  </div>
+);
+
 type ViewMode = 'list' | 'add' | 'edit' | 'detail';
 
 interface ChildDedication {
@@ -167,7 +191,6 @@ export const PenyerahanAnak: React.FC = () => {
       <TopStatsBar />
       <div className="flex justify-between items-center">
         <h1 className="text-xl font-bold text-slate-700 flex items-center gap-2">
-          {/* Added Droplets to lucide-react import to fix missing name error */}
           <Droplets className="text-slate-500" /> Penyerahan Anak
         </h1>
         <div className="text-[10px] text-slate-400 font-bold uppercase">
@@ -337,20 +360,3 @@ export const PenyerahanAnak: React.FC = () => {
     </div>
   );
 };
-
-const FormField = ({ label, children, required }: { label: string, children: React.ReactNode, required?: boolean }) => (
-  <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-    <label className="sm:w-32 text-xs font-bold text-slate-700">
-      {label}{required && <span className="text-rose-500 ml-1">*</span>}
-    </label>
-    <div className="flex-1">
-      {children}
-    </div>
-  </div>
-);
-
-const UserPlusIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-600">
-    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/>
-  </svg>
-);

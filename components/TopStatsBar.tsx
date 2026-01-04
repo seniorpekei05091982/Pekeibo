@@ -2,7 +2,15 @@
 import React from 'react';
 import { Users, Calendar, List, UsersRound, Star, UserPlus, Droplets, Heart, Skull } from 'lucide-react';
 
-const StatBox = ({ label, count, color, icon: Icon }: { label: string, count: number, color: string, icon: any }) => (
+interface StatBoxProps {
+  label: string;
+  count: number;
+  color: string;
+  icon: any;
+}
+
+// Fixed: Using React.FC to properly handle React props like 'key' in mapped collections
+const StatBox: React.FC<StatBoxProps> = ({ label, count, color, icon: Icon }) => (
   <div className={`${color} text-white rounded p-2 flex items-center gap-3 shadow-sm min-w-[120px] relative overflow-hidden`}>
     <div className="bg-black/10 p-1.5 rounded">
       <Icon size={16} />

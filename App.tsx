@@ -49,7 +49,12 @@ const App: React.FC = () => {
   ]);
 
   const [asetData, setAsetData] = useState<any[]>([
-    { id: '1', namaAset: 'Kursi Lipat', kodeAset: 'AST-001', lokasi: 'Aula', kondisi: 'Baik', jumlah: 150 }
+    { id: '1', namaAset: 'Kursi Lipat', kodeAset: 'AST-001', lokasi: 'Aula Utama', kondisi: 'Baik', jumlah: 150 }
+  ]);
+
+  const [talentaData, setTalentaData] = useState<any[]>([
+    { id: '1', namaTalenta: 'Menyanyi', keterangan: '-', dibuatOleh: 'admin', dibuatTanggal: '04/12/2024' },
+    { id: '2', namaTalenta: 'Bermain Musik', keterangan: '-', dibuatOleh: 'admin', dibuatTanggal: '04/12/2024' }
   ]);
 
   const [keuanganData, setKeuanganData] = useState<any[]>([]);
@@ -104,41 +109,46 @@ const App: React.FC = () => {
         );
       case 'jemaat':
       case 'cetak-jemaat':
-        // Both menus use the same Jemaat component for 100% identical look and sync
-        return (
-          <Jemaat 
-            menuId={activeMenu}
-            onBack={() => setActiveMenu('dashboard')} 
-            churchInfo={churchInfo} 
-            data={jemaatData} 
-            setData={setJemaatData} 
-          />
-        );
+        return <Jemaat menuId={activeMenu} onBack={() => setActiveMenu('dashboard')} churchInfo={churchInfo} data={jemaatData} setData={setJemaatData} />;
       case 'jadwal':
         return <JadwalIbadah onBack={() => setActiveMenu('dashboard')} data={jadwalData} setData={setJadwalData} />;
       case 'pelayanan':
         return <DaftarPelayanan onBack={() => setActiveMenu('dashboard')} data={pelayananData} setData={setPelayananData} />;
+      case 'komsel':
+        return <Komsel onBack={() => setActiveMenu('dashboard')} />;
+      
+      // Commissions
+      case 'komisi-sm':
+        return <KomisiMember type="Pelayanan Anak & Remaja (SM)" onBack={() => setActiveMenu('dashboard')} />;
+      case 'komisi-pemuda':
+        return <KomisiMember type="Pelayanan Pemuda" onBack={() => setActiveMenu('dashboard')} />;
+      case 'komisi-perkawan':
+        return <KomisiMember type="Pelayanan Perempuan (Perkawan)" onBack={() => setActiveMenu('dashboard')} />;
+      case 'komisi-perkarya':
+        return <KomisiMember type="Pelayanan Laki-laki (Perkarya)" onBack={() => setActiveMenu('dashboard')} />;
+
+      case 'talenta':
+        return <Talenta data={talentaData} setData={setTalentaData} onBack={() => setActiveMenu('dashboard')} />;
       case 'keuangan':
         return <Keuangan onBack={() => setActiveMenu('dashboard')} data={keuanganData} setData={setKeuanganData} />;
       case 'aset':
-        return <Aset onBack={() => setActiveMenu('dashboard')} data={asetData} setData={setAsetData} />;
+        return <Aset onBack={() => setActiveMenu('dashboard')} />;
       
-      // Settings & Profile
       case 'profile-user':
         return <ProfileUser adminInfo={adminInfo} setAdminInfo={setAdminInfo} onBack={() => setActiveMenu('dashboard')} />;
       case 'profile-gereja':
         return <ProfileGereja churchData={churchInfo} setChurchData={setChurchInfo} onBack={() => setActiveMenu('dashboard')} />;
-
-      // Others
+      case 'users':
+        return <Users onBack={() => setActiveMenu('dashboard')} />;
+      case 'backup':
+        return <BackupData onBack={() => setActiveMenu('dashboard')} />;
+      
       case 'penyerahan': return <PenyerahanAnak onBack={() => setActiveMenu('dashboard')} />;
       case 'katekisasi': return <Katekisasi />;
       case 'baptisan': return <Baptisan onBack={() => setActiveMenu('dashboard')} />;
       case 'kedukaan': return <Kedukaan onBack={() => setActiveMenu('dashboard')} />;
       case 'konseling': return <Konseling onBack={() => setActiveMenu('dashboard')} />;
-      case 'users': return <Users onBack={() => setActiveMenu('dashboard')} />;
-      case 'backup': return <BackupData onBack={() => setActiveMenu('dashboard')} />;
       
-      // Reports
       case 'lap-ultah': return <LaporanUltah onBack={() => setActiveMenu('dashboard')} />;
       case 'lap-usia': return <LaporanUsia onBack={() => setActiveMenu('dashboard')} />;
       case 'lap-usia-filter': return <LaporanUsiaFilter onBack={() => setActiveMenu('dashboard')} />;

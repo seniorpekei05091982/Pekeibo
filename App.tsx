@@ -10,6 +10,9 @@ import { Baptisan } from './pages/Baptisan';
 import { Kedukaan } from './pages/Kedukaan';
 import { Konseling } from './pages/Konseling';
 import { JadwalIbadah } from './pages/JadwalIbadah';
+import { DaftarPelayanan } from './pages/DaftarPelayanan';
+import { Komsel } from './pages/Komsel';
+import { KomisiMember } from './pages/KomisiMember';
 
 const App: React.FC = () => {
   const [activeMenu, setActiveMenu] = useState('dashboard');
@@ -23,6 +26,18 @@ const App: React.FC = () => {
         return <Jemaat onBack={() => setActiveMenu('dashboard')} />;
       case 'jadwal':
         return <JadwalIbadah onBack={() => setActiveMenu('dashboard')} />;
+      case 'pelayanan':
+        return <DaftarPelayanan onBack={() => setActiveMenu('dashboard')} />;
+      case 'komsel':
+        return <Komsel onBack={() => setActiveMenu('dashboard')} />;
+      case 'komisi-sm':
+        return <KomisiMember type="Pelayanan Anak & Remaja (SM)" onBack={() => setActiveMenu('dashboard')} />;
+      case 'komisi-pemuda':
+        return <KomisiMember type="Pelayanan Pemuda" onBack={() => setActiveMenu('dashboard')} />;
+      case 'komisi-perkawan':
+        return <KomisiMember type="Pelayanan Perempuan (Perkawan)" onBack={() => setActiveMenu('dashboard')} />;
+      case 'komisi-perkarya':
+        return <KomisiMember type="Pelayanan Laki-laki (Perkarya)" onBack={() => setActiveMenu('dashboard')} />;
       case 'penyerahan':
         return <PenyerahanAnak onBack={() => setActiveMenu('dashboard')} />;
       case 'katekisasi':

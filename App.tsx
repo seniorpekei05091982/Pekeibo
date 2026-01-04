@@ -56,7 +56,7 @@ const App: React.FC = () => {
 
   // Church & Admin Profile
   const [churchInfo, setChurchInfo] = useState({
-    nama: 'Gereja Kemah Injil (KINGMI) Di Tanah Papua',
+    nama: 'GEREJA KINGMI PAPUA',
     logo: 'https://ui-avatars.com/api/?name=KINGMI&background=fb923c&color=fff&size=128',
     alamat: 'Tanah Papua',
     telp: '0811-XXXX-XXXX'
@@ -70,15 +70,19 @@ const App: React.FC = () => {
   });
 
   const handleLogout = () => {
-    if (window.confirm('Apakah Anda yakin ingin keluar dari sistem?')) {
+    const confirmLogout = window.confirm('Apakah Anda yakin ingin keluar dari sistem?');
+    if (confirmLogout) {
       setIsLoggedIn(false);
       setActiveMenu('dashboard');
     }
   };
 
   const handleMenuSelect = (id: string) => {
-    if (id === 'logout') handleLogout();
-    else setActiveMenu(id);
+    if (id === 'logout') {
+      handleLogout();
+    } else {
+      setActiveMenu(id);
+    }
   };
 
   if (!isLoggedIn) {
@@ -152,7 +156,7 @@ const App: React.FC = () => {
         <main className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-300">
           {renderContent()}
           <footer className="p-6 text-[11px] text-slate-400 flex flex-col sm:flex-row justify-between items-center border-t border-slate-200 mt-auto bg-white/50">
-            <span>Copyright &copy; 2024 <strong className="text-slate-500 font-bold">Gereja KINGMI di Tanah Papua</strong> | Era Sistem Media. All rights reserved.</span>
+            <span>Copyright &copy; 2024 <strong className="text-slate-500 font-bold">GEREJA KINGMI PAPUA</strong> | Era Sistem Media. All rights reserved.</span>
             <span className="mt-2 sm:mt-0 font-semibold text-rose-600 uppercase tracking-tighter">Sistem Informasi Gereja Version 2.0</span>
           </footer>
         </main>

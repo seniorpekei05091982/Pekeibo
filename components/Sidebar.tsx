@@ -93,12 +93,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ onSelect, activeId, churchInfo
   return (
     <div className="h-full bg-[#222d32] text-white flex flex-col w-64 shadow-2xl overflow-y-auto scrollbar-thin scrollbar-thumb-slate-700">
       <div className="p-4 bg-orange-600 flex items-center gap-3 border-b border-orange-700/50 sticky top-0 z-10 shadow-md">
-        <div className="w-9 h-9 bg-white rounded shadow-inner flex items-center justify-center overflow-hidden">
+        <div className="w-9 h-9 bg-white rounded shadow-inner flex items-center justify-center overflow-hidden shrink-0">
           <img src={churchInfo.logo} alt="Logo" className="w-full h-full object-cover" />
         </div>
         <div className="overflow-hidden">
-          <h1 className="font-bold text-[10px] tracking-tight leading-tight uppercase truncate">{churchInfo.nama}</h1>
-          <p className="text-[9px] font-medium opacity-80 leading-none">Integrated System</p>
+          <h1 className="font-black text-[11px] tracking-tight leading-tight uppercase truncate">{churchInfo.nama}</h1>
+          <p className="text-[9px] font-bold opacity-80 leading-none mt-0.5 uppercase tracking-tighter">Integrated System</p>
         </div>
       </div>
       

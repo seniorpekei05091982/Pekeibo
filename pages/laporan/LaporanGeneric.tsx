@@ -8,14 +8,13 @@ import { TopStatsBar } from '../../components/TopStatsBar';
 
 interface LaporanGenericProps {
   type: 'Talenta' | 'Pelayanan' | 'Ibadah' | 'Jenis Kelamin' | 'Keluarga' | 'Komsel';
+  churchInfo: { nama: string, logo: string };
   onBack: () => void;
 }
 
-export const LaporanGeneric: React.FC<LaporanGenericProps> = ({ type }) => {
-  const [filterValue, setFilterValue] = useState('');
+export const LaporanGeneric: React.FC<LaporanGenericProps> = ({ type, churchInfo }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Pre-defined headers based on type (matching screenshots)
   const getHeaders = () => {
     switch (type) {
       case 'Talenta': return ['No.', 'Nomer Jemaat', 'Nama', 'Alamat', 'Nomer HP', 'Talenta'];
@@ -24,16 +23,6 @@ export const LaporanGeneric: React.FC<LaporanGenericProps> = ({ type }) => {
       case 'Jenis Kelamin': return ['No.', 'Nomer Jemaat', 'Nama', 'Alamat', 'Nomer HP', 'Jenis Kelamin'];
       case 'Keluarga': return ['No.', 'Nomer Jemaat', 'Nomer Keluarga', 'Nama', 'Alamat', 'Nomer HP', 'Hubungan Keluarga'];
       default: return ['No.', 'Nomer Jemaat', 'Nama', 'Alamat', 'Nomer HP', type];
-    }
-  };
-
-  const getOptions = () => {
-    switch (type) {
-      case 'Talenta': return ['Menyanyi', 'Memasak', 'Multimedia', 'Main Musik', 'Tamborin'];
-      case 'Pelayanan': return ['Singer', 'Penerima Tamu', 'Song Leader', 'Pemusik', 'Kolektan'];
-      case 'Ibadah': return ['Ibadah Raya 1', 'Ibadah Raya 2', 'Ibadah Raya 3', 'Doa Pagi', 'Doa Malam'];
-      case 'Jenis Kelamin': return ['Laki-Laki', 'Perempuan'];
-      default: return [];
     }
   };
 
@@ -51,76 +40,39 @@ export const LaporanGeneric: React.FC<LaporanGenericProps> = ({ type }) => {
           {type === 'Talenta' ? <Star size={24} /> : <PieChart size={24} />} 
           Laporan Jemaat - {type}
         </h1>
-        <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
-          LAPORAN / <span className="text-blue-500">Jemaat - {type}</span>
+        <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider text-right">
+          {churchInfo.nama} <br/>
+          <span className="text-blue-500">Laporan Jemaat - {type}</span>
         </div>
       </div>
 
       <div className="bg-white rounded shadow-sm border border-slate-200">
-        <div className="p-4 border-b border-slate-100 text-sm font-bold text-slate-600 bg-slate-50/30">
-          Data Jemaat - {type}
+        <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/30">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full overflow-hidden border border-slate-200">
+               <img src={churchInfo.logo} alt="Logo" className="w-full h-full object-cover" />
+            </div>
+            <span className="text-xs font-bold text-slate-600 uppercase">Data Jemaat - {type}</span>
+          </div>
+          <button className="bg-slate-700 text-white px-3 py-1 rounded text-[10px] font-bold flex items-center gap-2">
+            <Printer size={12} /> Cetak Laporan
+          </button>
         </div>
 
         <div className="p-4 space-y-6">
-          {/* Filter Section */}
-          <div className="bg-white p-6 rounded border border-slate-100 shadow-sm flex items-center gap-4 max-w-2xl">
-            <label className="text-xs font-bold text-slate-700 whitespace-nowrap min-w-[100px]">
-              {type === 'Keluarga' ? 'Nomer Keluarga' : type}
-            </label>
-            {type === 'Keluarga' ? (
-              <input 
-                type="text" 
-                className="flex-1 border border-slate-300 rounded px-3 py-1.5 text-xs outline-none focus:ring-1 focus:ring-blue-500"
-                placeholder="000002"
-              />
-            ) : (
-              <select className="flex-1 border border-slate-300 rounded px-3 py-1.5 text-xs outline-none bg-white">
-                <option value="">Pilih {type}</option>
-                {getOptions().map(opt => <option key={opt} value={opt}>{opt}</option>)}
-              </select>
-            )}
-            <button className="bg-blue-600 text-white px-4 py-1.5 rounded text-xs font-bold shadow-md hover:bg-blue-700 transition-all flex items-center gap-2">
-              Tampilkan Data
-            </button>
-          </div>
-
-          {/* Table Controls */}
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
-              <span>Show</span>
-              <select className="border border-slate-300 rounded px-1 py-1 font-bold outline-none">
-                <option>10</option><option>25</option>
-              </select>
-              <span>entries</span>
-            </div>
-
-            <div className="flex flex-wrap gap-1">
-              {['Excel', 'PDF', 'CSV', 'Copy', 'Print'].map(btn => (
-                <button key={btn} className="px-3 py-1 bg-slate-600 hover:bg-slate-700 text-white text-[10px] font-bold rounded transition-all shadow-sm">{btn}</button>
-              ))}
-              <button className="px-3 py-1 bg-slate-600 text-white text-[10px] font-bold rounded flex items-center gap-1">Column visibility <ChevronDown size={10} /></button>
-            </div>
-
             <div className="flex items-center gap-2 text-xs">
               <span className="font-bold text-slate-500">Search:</span>
-              <input 
-                type="text" 
-                value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
-                className="border border-slate-300 rounded px-3 py-1.5 focus:ring-1 focus:ring-blue-500 outline-none w-48" 
-              />
+              <input type="text" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="border border-slate-300 rounded px-3 py-1.5 focus:ring-1 focus:ring-blue-500 outline-none w-48" />
             </div>
           </div>
 
-          {/* Table */}
           <div className="overflow-x-auto">
             <table className="w-full text-[11px] text-left border-collapse border border-slate-200">
               <thead className="bg-slate-50 border-y border-slate-200 text-slate-700 font-bold">
                 <tr>
                   {getHeaders().map((h, i) => (
-                    <th key={i} className={`px-4 py-3 border-r border-slate-200 ${i === 0 ? 'text-center w-10' : ''}`}>
-                      {h}
-                    </th>
+                    <th key={i} className={`px-4 py-3 border-r border-slate-200 ${i === 0 ? 'text-center w-10' : ''}`}>{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -138,15 +90,6 @@ export const LaporanGeneric: React.FC<LaporanGenericProps> = ({ type }) => {
                 ))}
               </tbody>
             </table>
-          </div>
-
-          <div className="flex justify-between items-center text-xs text-slate-500 font-medium">
-            <p>Showing 1 to {dummyData.length} of {dummyData.length} entries</p>
-            <div className="flex gap-1">
-              <button className="px-3 py-1.5 border border-slate-200 rounded opacity-50 cursor-not-allowed">Previous</button>
-              <button className="px-3 py-1.5 bg-blue-600 text-white rounded font-bold">1</button>
-              <button className="px-3 py-1.5 border border-slate-200 rounded opacity-50 cursor-not-allowed">Next</button>
-            </div>
           </div>
         </div>
       </div>

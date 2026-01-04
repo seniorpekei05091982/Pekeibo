@@ -1,8 +1,12 @@
 
 import React from 'react';
-import { Search, Bell, Maximize, User, Settings, Grid } from 'lucide-react';
+import { Search, Bell, Maximize, User, Grid } from 'lucide-react';
 
-export const Header: React.FC = () => {
+interface HeaderProps {
+  adminInfo: { name: string; photo: string };
+}
+
+export const Header: React.FC<HeaderProps> = ({ adminInfo }) => {
   return (
     <header className="h-14 bg-white border-b border-slate-200 flex items-center justify-between px-4 sticky top-0 z-30 shadow-sm">
       <div className="flex items-center gap-4">
@@ -39,11 +43,11 @@ export const Header: React.FC = () => {
 
         <div className="flex items-center gap-3 pl-2 pr-1 cursor-pointer hover:bg-slate-50 py-1 rounded-lg transition-colors group">
           <div className="text-right hidden sm:block">
-            <p className="text-xs font-bold text-slate-700 leading-tight">Admin User</p>
+            <p className="text-xs font-bold text-slate-700 leading-tight truncate max-w-[120px]">{adminInfo.name}</p>
             <p className="text-[10px] text-slate-400 font-semibold leading-tight">SUPER ADMIN</p>
           </div>
-          <div className="w-9 h-9 bg-slate-200 rounded-full border-2 border-white shadow-sm flex items-center justify-center text-slate-400 group-hover:text-blue-500">
-            <User size={20} />
+          <div className="w-9 h-9 bg-slate-200 rounded-full border-2 border-white shadow-sm flex items-center justify-center overflow-hidden">
+            <img src={adminInfo.photo} alt="Profile" className="w-full h-full object-cover" />
           </div>
         </div>
       </div>

@@ -7,9 +7,10 @@ import { NavItem } from '../types';
 interface SidebarProps {
   onSelect: (id: string) => void;
   activeId: string;
+  churchInfo: { nama: string, logo: string };
+  adminInfo: { name: string, photo: string };
 }
 
-// Helper to check if any child (recursively) matches the activeId
 const isSectionActive = (item: NavItem, activeId: string): boolean => {
   if (item.id === activeId) return true;
   if (item.children) {
@@ -18,12 +19,9 @@ const isSectionActive = (item: NavItem, activeId: string): boolean => {
   return false;
 };
 
-// Helper to find which header "owns" the current activeId
 const isHeaderActive = (headerId: string, activeId: string): boolean => {
   const findHeaderIndex = SIDEBAR_MENU.findIndex(m => m.id === headerId);
   if (findHeaderIndex === -1) return false;
-  
-  // Search subsequent items until the next header
   for (let i = findHeaderIndex + 1; i < SIDEBAR_MENU.length; i++) {
     const item = SIDEBAR_MENU[i];
     if (item.isHeader) break;
@@ -59,11 +57,8 @@ const NavMenuItem: React.FC<{
     <div className="w-full">
       <button
         onClick={() => {
-          if (hasChildren) {
-            setIsOpen(!isOpen);
-          } else {
-            onSelect(item.id);
-          }
+          if (hasChildren) setIsOpen(!isOpen);
+          else onSelect(item.id);
         }}
         className={`flex items-center w-full px-4 py-2 text-sm transition-all duration-200 border-l-4 ${
           isActive 
@@ -86,13 +81,7 @@ const NavMenuItem: React.FC<{
       {hasChildren && (isOpen || isChildActive) && (
         <div className="bg-[#1e282c]">
           {item.children?.map((child) => (
-            <NavMenuItem 
-              key={child.id} 
-              item={child} 
-              depth={depth + 1} 
-              onSelect={onSelect}
-              activeId={activeId}
-            />
+            <NavMenuItem key={child.id} item={child} depth={depth + 1} onSelect={onSelect} activeId={activeId} />
           ))}
         </div>
       )}
@@ -100,27 +89,25 @@ const NavMenuItem: React.FC<{
   );
 };
 
-export const Sidebar: React.FC<SidebarProps> = ({ onSelect, activeId }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ onSelect, activeId, churchInfo, adminInfo }) => {
   return (
     <div className="h-full bg-[#222d32] text-white flex flex-col w-64 shadow-2xl overflow-y-auto scrollbar-thin scrollbar-thumb-slate-700">
-      {/* Brand Header */}
       <div className="p-4 bg-orange-600 flex items-center gap-3 border-b border-orange-700/50 sticky top-0 z-10 shadow-md">
-        <div className="w-9 h-9 bg-white rounded shadow-inner flex items-center justify-center text-orange-600 font-extrabold text-xl">
-          G
+        <div className="w-9 h-9 bg-white rounded shadow-inner flex items-center justify-center overflow-hidden">
+          <img src={churchInfo.logo} alt="Logo" className="w-full h-full object-cover" />
         </div>
-        <div>
-          <h1 className="font-bold text-sm tracking-tight leading-tight uppercase">SIM GEREJA</h1>
-          <p className="text-[10px] font-medium opacity-80 leading-none">Integrated System</p>
+        <div className="overflow-hidden">
+          <h1 className="font-bold text-[10px] tracking-tight leading-tight uppercase truncate">{churchInfo.nama}</h1>
+          <p className="text-[9px] font-medium opacity-80 leading-none">Integrated System</p>
         </div>
       </div>
       
-      {/* User Info Section */}
       <div className="p-4 flex items-center gap-3 bg-[#1a2226]">
         <div className="w-10 h-10 rounded-full bg-slate-600 border border-slate-500 overflow-hidden ring-2 ring-slate-700">
-          <img src="https://ui-avatars.com/api/?name=Admin+User&background=334155&color=fff" alt="Admin" />
+          <img src={adminInfo.photo} alt="Admin" className="w-full h-full object-cover" />
         </div>
         <div className="overflow-hidden">
-          <p className="text-sm font-bold truncate">Admin User</p>
+          <p className="text-sm font-bold truncate">{adminInfo.name}</p>
           <div className="flex items-center gap-1.5 mt-0.5">
             <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
             <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Online</span>
@@ -130,13 +117,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onSelect, activeId }) => {
 
       <nav className="flex-1 pb-10">
         {SIDEBAR_MENU.map((item) => (
-          <NavMenuItem 
-            key={item.id} 
-            item={item} 
-            depth={0} 
-            onSelect={onSelect} 
-            activeId={activeId}
-          />
+          <NavMenuItem key={item.id} item={item} depth={0} onSelect={onSelect} activeId={activeId} />
         ))}
       </nav>
       

@@ -104,7 +104,16 @@ const App: React.FC = () => {
         );
       case 'jemaat':
       case 'cetak-jemaat':
-        return <Jemaat onBack={() => setActiveMenu('dashboard')} churchInfo={churchInfo} data={jemaatData} setData={setJemaatData} />;
+        // Both menus use the same Jemaat component for 100% identical look and sync
+        return (
+          <Jemaat 
+            menuId={activeMenu}
+            onBack={() => setActiveMenu('dashboard')} 
+            churchInfo={churchInfo} 
+            data={jemaatData} 
+            setData={setJemaatData} 
+          />
+        );
       case 'jadwal':
         return <JadwalIbadah onBack={() => setActiveMenu('dashboard')} data={jadwalData} setData={setJadwalData} />;
       case 'pelayanan':
@@ -120,7 +129,7 @@ const App: React.FC = () => {
       case 'profile-gereja':
         return <ProfileGereja churchData={churchInfo} setChurchData={setChurchInfo} onBack={() => setActiveMenu('dashboard')} />;
 
-      // Others (Fallback simple logic or developed pages)
+      // Others
       case 'penyerahan': return <PenyerahanAnak onBack={() => setActiveMenu('dashboard')} />;
       case 'katekisasi': return <Katekisasi />;
       case 'baptisan': return <Baptisan onBack={() => setActiveMenu('dashboard')} />;

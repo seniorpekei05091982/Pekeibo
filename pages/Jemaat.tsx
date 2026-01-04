@@ -3,7 +3,7 @@ import React, { useState, useMemo } from 'react';
 import { 
   Plus, Search, Edit, Eye, Trash2, Printer, ArrowLeft, 
   User, MapPin, Phone, Mail, Calendar, 
-  Users, CheckCircle2, RotateCcw, Camera
+  Users, CheckCircle2, RotateCcw, Camera, Home
 } from 'lucide-react';
 import { TopStatsBar } from '../components/TopStatsBar';
 
@@ -24,13 +24,14 @@ interface JemaatData {
 }
 
 interface JemaatProps {
+  menuId: string;
   onBack: () => void;
   churchInfo: { nama: string, logo: string, alamat: string, telp: string };
   data: JemaatData[];
   setData: React.Dispatch<React.SetStateAction<JemaatData[]>>;
 }
 
-export const Jemaat: React.FC<JemaatProps> = ({ onBack, churchInfo, data, setData }) => {
+export const Jemaat: React.FC<JemaatProps> = ({ menuId, onBack, churchInfo, data, setData }) => {
   const [mode, setMode] = useState<'list' | 'add' | 'edit' | 'detail' | 'print'>('list');
   const [selected, setSelected] = useState<JemaatData | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -79,6 +80,15 @@ export const Jemaat: React.FC<JemaatProps> = ({ onBack, churchInfo, data, setDat
     if (window.confirm(`Hapus data jemaat "${name}"?`)) {
       setData(data.filter(i => i.id !== id));
     }
+  };
+
+  const renderBreadcrumb = () => {
+    const isReport = menuId === 'cetak-jemaat';
+    return (
+      <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider text-right flex-1">
+        {isReport ? 'LAPORAN' : 'MASTER DATA'} / <span className="text-blue-500">{isReport ? 'CETAK JEMAAT' : 'JEMAAT'}</span>
+      </div>
+    );
   };
 
   const renderPrintView = () => (
@@ -256,34 +266,47 @@ export const Jemaat: React.FC<JemaatProps> = ({ onBack, churchInfo, data, setDat
   const renderListView = () => (
     <div className="p-6 bg-slate-100 min-h-full">
       <TopStatsBar jemaatCount={data.length} />
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+      <div className="flex justify-between items-center mb-6 gap-4">
         <div className="flex items-center gap-4">
           <Users className="text-slate-700" size={28} />
-          <h1 className="text-2xl font-bold text-slate-800 uppercase tracking-tight">Daftar Jemaat</h1>
+          <h1 className="text-2xl font-bold text-slate-800 uppercase tracking-tight">
+            {menuId === 'cetak-jemaat' ? 'Cetak Jemaat' : 'Daftar Jemaat'}
+          </h1>
         </div>
+        {renderBreadcrumb()}
       </div>
       
       <div className="bg-white rounded shadow-sm border border-slate-200 overflow-hidden">
         <div className="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50/50">
-          <h2 className="text-sm font-bold text-slate-700">Data Jemaat Aktif</h2>
-          <button 
-            onClick={() => { setFormData({ jenisKelamin: 'Laki-Laki', komsel: 'Petrus' }); setMode('add'); }} 
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-xs font-bold flex items-center gap-2 shadow-md transition-all active:scale-95"
-          >
-            <Plus size={16} /> Tambah Jemaat
-          </button>
+          <h2 className="text-sm font-bold text-slate-700">Database Jemaat Aktif</h2>
+          <div className="flex gap-2">
+            <button 
+              onClick={() => { setFormData({ jenisKelamin: 'Laki-Laki', komsel: 'Petrus' }); setMode('add'); }} 
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-xs font-bold flex items-center gap-2 shadow-md transition-all active:scale-95"
+            >
+              <Plus size={16} /> Tambah Jemaat
+            </button>
+          </div>
         </div>
         <div className="p-4 space-y-4">
-          <div className="relative w-full max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-            <input 
-               type="text" 
-               value={searchTerm}
-               onChange={e => setSearchTerm(e.target.value)}
-               className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-full text-xs outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20" 
-               placeholder="Cari jemaat..." 
-            />
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="relative w-full max-w-md">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+              <input 
+                 type="text" 
+                 value={searchTerm}
+                 onChange={e => setSearchTerm(e.target.value)}
+                 className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-full text-xs outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20" 
+                 placeholder="Cari jemaat..." 
+              />
+            </div>
+            <div className="flex gap-1">
+               {['Excel', 'PDF', 'Printer'].map(btn => (
+                 <button key={btn} className="px-3 py-1 bg-slate-500 hover:bg-slate-600 text-white text-[10px] font-bold rounded shadow-sm transition-all">{btn}</button>
+               ))}
+            </div>
           </div>
+
           <div className="overflow-x-auto">
             <table className="w-full text-[11px] text-left border-collapse">
               <thead className="bg-slate-50 border-y border-slate-200 text-slate-700 font-bold uppercase">
@@ -306,6 +329,7 @@ export const Jemaat: React.FC<JemaatProps> = ({ onBack, churchInfo, data, setDat
                       <div className="flex justify-center gap-1">
                         <button onClick={() => { setSelected(item); setMode('detail'); }} className="p-1.5 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-600"><Eye size={14} /></button>
                         <button onClick={() => { setSelected(item); setFormData(item); setMode('edit'); }} className="p-1.5 bg-amber-100 text-amber-600 rounded-lg hover:bg-amber-600"><Edit size={14} /></button>
+                        <button onClick={() => { setSelected(item); setMode('print'); }} className="p-1.5 bg-emerald-100 text-emerald-600 rounded-lg hover:bg-emerald-600"><Printer size={14} /></button>
                         <button onClick={() => handleDelete(item.id, item.nama)} className="p-1.5 bg-rose-100 text-rose-600 rounded-lg hover:bg-rose-600"><Trash2 size={14} /></button>
                       </div>
                     </td>

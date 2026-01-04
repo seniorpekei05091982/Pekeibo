@@ -2,13 +2,13 @@
 import React, { useState } from 'react';
 import { ChevronDown, ChevronRight, Circle, LogOut } from 'lucide-react';
 import { SIDEBAR_MENU } from '../constants';
-import { NavItem } from '../types';
+import { NavItem, UserRole } from '../types';
 
 interface SidebarProps {
   onSelect: (id: string) => void;
   activeId: string;
   churchInfo: { nama: string, logo: string };
-  adminInfo: { name: string, photo: string };
+  adminInfo: { name: string, photo: string, role: UserRole };
 }
 
 const isSectionActive = (item: NavItem, activeId: string): boolean => {
@@ -24,9 +24,14 @@ const NavMenuItem: React.FC<{
   depth: number; 
   onSelect: (id: string) => void;
   activeId: string;
-}> = ({ item, depth, onSelect, activeId }) => {
+  userRole: UserRole;
+}> = ({ item, depth, onSelect, activeId, userRole }) => {
   const [isOpen, setIsOpen] = useState(false);
   
+  // Role filtering logic
+  if (item.minRole === 'Sinode' && userRole !== 'Sinode') return null;
+  if (item.minRole === 'Klasis' && userRole === 'Jemaat') return null;
+
   if (item.isHeader) {
     return (
       <div className="px-6 py-5 mt-6 text-[9px] font-black tracking-[0.3em] uppercase text-slate-600 border-t border-slate-900/50">
@@ -80,7 +85,7 @@ const NavMenuItem: React.FC<{
       {hasChildren && (isOpen || isChildActive) && (
         <div className="bg-slate-950/40 border-l-2 border-slate-900 ml-8 my-1 rounded-bl-xl">
           {item.children?.map((child) => (
-            <NavMenuItem key={child.id} item={child} depth={depth + 1} onSelect={onSelect} activeId={activeId} />
+            <NavMenuItem key={child.id} item={child} depth={depth + 1} onSelect={onSelect} activeId={activeId} userRole={userRole} />
           ))}
         </div>
       )}
@@ -97,13 +102,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ onSelect, activeId, churchInfo
           <img src={churchInfo.logo} alt="Logo" className="w-full h-full object-cover" />
         </div>
         <div className="overflow-hidden">
-          <h1 className="font-black text-[11px] tracking-tighter leading-none uppercase truncate text-white drop-shadow-sm">{churchInfo.nama}</h1>
+          <h1 className="font-black text-[10px] tracking-tighter leading-none uppercase truncate text-white drop-shadow-sm">SINODE KINGMI PAPUA</h1>
           <div className="flex items-center gap-1.5 mt-2">
             <span className="flex h-2 w-2 relative">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-50"></span>
             </span>
-            <p className="text-[8px] font-black uppercase tracking-[0.2em] text-orange-100">Live Dashboard</p>
+            <p className="text-[8px] font-black uppercase tracking-[0.2em] text-orange-100">{adminInfo.role} AKSES</p>
           </div>
         </div>
       </div>
@@ -119,26 +124,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ onSelect, activeId, churchInfo
           </div>
           <div className="overflow-hidden">
             <p className="text-[10px] font-black truncate text-slate-100 uppercase tracking-tight">{adminInfo.name}</p>
-            <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-0.5">Super Admin</p>
+            <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-0.5">{adminInfo.role}</p>
           </div>
         </div>
       </div>
 
-      {/* Navigation Menu */}
       <nav className="flex-1 px-2 pb-24">
         {SIDEBAR_MENU.map((item) => (
-          <NavMenuItem key={item.id} item={item} depth={0} onSelect={onSelect} activeId={activeId} />
+          <NavMenuItem key={item.id} item={item} depth={0} onSelect={onSelect} activeId={activeId} userRole={adminInfo.role} />
         ))}
       </nav>
       
-      {/* Support Footer */}
       <div className="mt-auto p-6 bg-slate-950 border-t border-slate-900 text-center">
-        <div className="flex items-center justify-center gap-2 mb-2">
-          <div className="w-6 h-[1px] bg-slate-800"></div>
-          <p className="text-[9px] font-black text-slate-700 uppercase tracking-widest">Support v2.0</p>
-          <div className="w-6 h-[1px] bg-slate-800"></div>
-        </div>
-        <p className="text-[8px] font-bold text-slate-600 uppercase tracking-tighter">&copy; 2024 ERA SISTEM MEDIA PAPUA</p>
+         <p className="text-[8px] font-bold text-slate-600 uppercase tracking-tighter">&copy; 2024 ERA SISTEM MEDIA PAPUA</p>
       </div>
     </div>
   );

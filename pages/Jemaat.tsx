@@ -3,8 +3,7 @@ import React, { useState, useMemo } from 'react';
 import { 
   Plus, Search, Edit, Eye, Trash2, ArrowLeft, 
   User, MapPin, Phone, Mail, Calendar, 
-  // Added Droplets to lucide-react imports
-  Users, CheckCircle2, RotateCcw, Camera, Home, Heart, ShieldCheck, Star, Briefcase, Filter, AlertCircle, Upload, Droplets
+  Users, CheckCircle2, RotateCcw, Camera, Home, Heart, ShieldCheck, Star, Briefcase, Filter, AlertCircle, Upload, Droplets, ChevronDown, CheckSquare, Square
 } from 'lucide-react';
 import { TopStatsBar } from '../components/TopStatsBar';
 
@@ -23,6 +22,7 @@ interface JemaatData {
   statusKeluarga: string;
   statusKawin: string;
   status: string;
+  jalurMasuk: 'Biologis (Lahir)' | 'PI (Penginjilan)' | 'Pindahan (Denominasi/Agama Lain)';
   baptis: 'Belum' | 'Sudah';
   pendetaBaptis?: string;
   tempatBaptis?: string;
@@ -44,8 +44,14 @@ export const Jemaat: React.FC<JemaatProps> = ({ menuId, onBack, churchInfo, data
   const [selected, setSelected] = useState<JemaatData | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   
+  // Advanced Filters
   const [filterRayon, setFilterRayon] = useState('Semua');
   const [filterStatus, setFilterStatus] = useState('Semua');
+  const [filterGender, setFilterGender] = useState('Semua');
+  const [filterMarital, setFilterMarital] = useState('Semua');
+
+  // Bulk Action State
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   const [formData, setFormData] = useState<Partial<JemaatData>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -56,10 +62,41 @@ export const Jemaat: React.FC<JemaatProps> = ({ menuId, onBack, churchInfo, data
                             item.nomerJemaat.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesRayon = filterRayon === 'Semua' || item.rayon === filterRayon;
       const matchesStatus = filterStatus === 'Semua' || item.status === filterStatus;
+      const matchesGender = filterGender === 'Semua' || item.jenisKelamin === filterGender;
+      const matchesMarital = filterMarital === 'Semua' || item.statusKawin === filterMarital;
       
-      return matchesSearch && matchesRayon && matchesStatus;
+      return matchesSearch && matchesRayon && matchesStatus && matchesGender && matchesMarital;
     });
-  }, [data, searchTerm, filterRayon, filterStatus]);
+  }, [data, searchTerm, filterRayon, filterStatus, filterGender, filterMarital]);
+
+  const toggleSelectAll = () => {
+    if (selectedIds.size === filteredData.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(filteredData.map(d => d.id)));
+    }
+  };
+
+  const toggleSelectOne = (id: string) => {
+    const next = new Set(selectedIds);
+    if (next.has(id)) next.delete(id);
+    else next.add(id);
+    setSelectedIds(next);
+  };
+
+  const handleBulkDelete = () => {
+    if (window.confirm(`Hapus ${selectedIds.size} data jemaat terpilih?`)) {
+      setData(data.filter(d => !selectedIds.has(d.id)));
+      setSelectedIds(new Set());
+    }
+  };
+
+  const handleBulkStatusUpdate = (status: string) => {
+    if (window.confirm(`Ubah status ${selectedIds.size} jemaat menjadi ${status}?`)) {
+      setData(data.map(d => selectedIds.has(d.id) ? { ...d, status } : d));
+      setSelectedIds(new Set());
+    }
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -90,13 +127,14 @@ export const Jemaat: React.FC<JemaatProps> = ({ menuId, onBack, churchInfo, data
         nomerHP: formData.nomerHP || '',
         rayon: formData.rayon || 'Rayon 1 Abepura',
         statusKeluarga: formData.statusKeluarga || 'Kepala Keluarga',
-        statusKawin: formData.statusKawin || 'Belum',
+        statusKawin: formData.statusKawin || 'Belum Menikah',
         baptis: formData.baptis || 'Belum',
         pendetaBaptis: formData.pendetaBaptis || '',
         tempatBaptis: formData.tempatBaptis || '',
         pelayanan: formData.pelayanan || '',
         talenta: formData.talenta || '',
         status: formData.status || 'Tetap',
+        jalurMasuk: formData.jalurMasuk || 'PI (Penginjilan)',
         tanggalBergabung: formData.tanggalBergabung || '',
         foto: formData.foto || `https://ui-avatars.com/api/?name=${encodeURIComponent(formData.nama || '')}&background=random`
       };
@@ -110,7 +148,6 @@ export const Jemaat: React.FC<JemaatProps> = ({ menuId, onBack, churchInfo, data
     setErrors({});
   };
 
-  // Added handleDelete implementation
   const handleDelete = (id: string, name: string) => {
     if (window.confirm(`Apakah Anda yakin ingin menghapus data jemaat "${name}"?`)) {
       setData(data.filter(item => item.id !== id));
@@ -125,7 +162,7 @@ export const Jemaat: React.FC<JemaatProps> = ({ menuId, onBack, churchInfo, data
             <div className="p-3 bg-blue-600 rounded-2xl text-white shadow-xl">
               {mode === 'add' ? <Plus size={24} /> : <Edit size={24} />}
             </div>
-            {mode === 'add' ? 'Registrasi Jemaat Baru' : 'Ubah Data Jemaat'}
+            {mode === 'add' ? 'Registrasi Anggota Baru' : 'Ubah Data Anggota'}
           </h1>
           <p className="text-slate-400 text-xs font-bold uppercase tracking-widest mt-2 ml-16">Silakan lengkapi data jemaat secara berurutan di bawah ini.</p>
         </div>
@@ -135,7 +172,6 @@ export const Jemaat: React.FC<JemaatProps> = ({ menuId, onBack, churchInfo, data
       </div>
 
       <div className="max-w-6xl mx-auto space-y-8 pb-20">
-        {/* BAGIAN 1: IDENTITAS & FOTO */}
         <div className="bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden">
           <div className="bg-slate-50 px-8 py-4 border-b border-slate-100 flex items-center gap-3">
              <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center"><User size={16} /></div>
@@ -195,32 +231,41 @@ export const Jemaat: React.FC<JemaatProps> = ({ menuId, onBack, churchInfo, data
           </div>
         </div>
 
-        {/* BAGIAN 2: DATA KEANGGOTAAN */}
         <div className="bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden">
           <div className="bg-slate-50 px-8 py-4 border-b border-slate-100 flex items-center gap-3">
              <div className="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center"><ShieldCheck size={16} /></div>
-             <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest">Informasi Keanggotaan</h3>
+             <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest">Informasi Keanggotaan & Penyelamatan</h3>
           </div>
-          <div className="p-10 grid grid-cols-1 md:grid-cols-3 gap-8">
-            <FormField label="Rayon Pelayanan">
-              <select className="form-input" value={formData.rayon || 'Rayon 1 Abepura'} onChange={e => setFormData({...formData, rayon: e.target.value})}>
-                <option value="Rayon 1 Abepura">Rayon 1 Abepura</option>
-                <option value="Rayon 2 Sentani Waena">Rayon 2 Sentani Waena</option>
-              </select>
-            </FormField>
-            <FormField label="Status Keanggotaan">
-              <select className="form-input" value={formData.status || 'Tetap'} onChange={e => setFormData({...formData, status: e.target.value})}>
-                <option value="Tetap">Jemaat Tetap</option>
-                <option value="Calon">Calon Jemaat</option>
-              </select>
-            </FormField>
-            <FormField label="Tanggal Registrasi">
-              <input type="date" className="form-input" value={formData.tanggalBergabung || ''} onChange={e => setFormData({...formData, tanggalBergabung: e.target.value})} />
-            </FormField>
+          <div className="p-10 grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-6">
+              <FormField label="Jalur Masuk / Penyelamatan" required>
+                <select className="form-input bg-orange-50/50 border-orange-100" value={formData.jalurMasuk || 'PI (Penginjilan)'} onChange={e => setFormData({...formData, jalurMasuk: e.target.value as any})}>
+                  <option value="PI (Penginjilan)">PI (Penginjilan / Pertobatan)</option>
+                  <option value="Biologis (Lahir)">Biologis (Kelahiran)</option>
+                  <option value="Pindahan (Denominasi/Agama Lain)">Pindahan (Denominasi / Agama Lain)</option>
+                </select>
+              </FormField>
+              <FormField label="Rayon Pelayanan">
+                <select className="form-input" value={formData.rayon || 'Rayon 1 Abepura'} onChange={e => setFormData({...formData, rayon: e.target.value})}>
+                  <option value="Rayon 1 Abepura">Rayon 1 Abepura</option>
+                  <option value="Rayon 2 Sentani Waena">Rayon 2 Sentani Waena</option>
+                </select>
+              </FormField>
+            </div>
+            <div className="space-y-6">
+              <FormField label="Status Keanggotaan">
+                <select className="form-input" value={formData.status || 'Tetap'} onChange={e => setFormData({...formData, status: e.target.value})}>
+                  <option value="Tetap">Jemaat Tetap</option>
+                  <option value="Calon">Calon Jemaat</option>
+                </select>
+              </FormField>
+              <FormField label="Tanggal Registrasi">
+                <input type="date" className="form-input" value={formData.tanggalBergabung || ''} onChange={e => setFormData({...formData, tanggalBergabung: e.target.value})} />
+              </FormField>
+            </div>
           </div>
         </div>
 
-        {/* BAGIAN 3: KONTAK & STATUS KELUARGA */}
         <div className="bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden">
           <div className="bg-slate-50 px-8 py-4 border-b border-slate-100 flex items-center gap-3">
              <div className="w-8 h-8 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center"><Heart size={16} /></div>
@@ -237,7 +282,7 @@ export const Jemaat: React.FC<JemaatProps> = ({ menuId, onBack, churchInfo, data
             </div>
             <div className="space-y-6">
               <FormField label="Status Pernikahan">
-                <select className="form-input" value={formData.statusKawin || 'Belum'} onChange={e => setFormData({...formData, statusKawin: e.target.value})}>
+                <select className="form-input" value={formData.statusKawin || 'Belum Menikah'} onChange={e => setFormData({...formData, statusKawin: e.target.value})}>
                   {['Belum Menikah', 'Menikah', 'Duda', 'Janda', 'Cerai'].map(v => <option key={v} value={v}>{v}</option>)}
                 </select>
               </FormField>
@@ -250,7 +295,6 @@ export const Jemaat: React.FC<JemaatProps> = ({ menuId, onBack, churchInfo, data
           </div>
         </div>
 
-        {/* BAGIAN 4: DATA ROHANI */}
         <div className="bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden">
           <div className="bg-slate-50 px-8 py-4 border-b border-slate-100 flex items-center gap-3">
              <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center"><Droplets size={16} /></div>
@@ -286,7 +330,6 @@ export const Jemaat: React.FC<JemaatProps> = ({ menuId, onBack, churchInfo, data
           </div>
         </div>
 
-        {/* TOMBOL AKSI */}
         <div className="flex justify-end gap-4">
            <button onClick={() => setMode('list')} className="px-10 py-4 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all">Batalkan</button>
            <button onClick={handleSave} className="px-16 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] flex items-center gap-4 shadow-2xl shadow-blue-500/20 transition-all active:scale-95">
@@ -304,12 +347,12 @@ export const Jemaat: React.FC<JemaatProps> = ({ menuId, onBack, churchInfo, data
   );
 
   const renderListView = () => (
-    <div className="p-8 bg-slate-50 min-h-full">
+    <div className="p-8 min-h-full">
       <TopStatsBar jemaatCount={data.length} />
       
       <div className="flex flex-col md:flex-row justify-between items-end mb-8 gap-6">
         <div>
-          <h1 className="text-4xl font-black text-slate-900 tracking-tighter uppercase flex items-center gap-4">
+          <h1 className="text-4xl font-black tracking-tighter uppercase flex items-center gap-4">
             <Users className="text-blue-600" size={36} />
             {menuId === 'cetak-jemaat' ? 'Cetak Jemaat' : 'Database Jemaat'}
           </h1>
@@ -320,40 +363,86 @@ export const Jemaat: React.FC<JemaatProps> = ({ menuId, onBack, churchInfo, data
           onClick={() => { setFormData({ jenisKelamin: 'Laki-Laki', rayon: 'Rayon 1 Abepura', status: 'Tetap', baptis: 'Belum' }); setMode('add'); }} 
           className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-3 shadow-2xl shadow-blue-500/20 transition-all active:scale-95"
         >
-          <Plus size={20} /> Tambah Jemaat Baru
+          <Plus size={20} /> Tambah Anggota Baru
         </button>
       </div>
       
-      <div className="bg-white rounded-[2.5rem] shadow-[0_10px_40px_rgba(0,0,0,0.03)] border border-slate-100 overflow-hidden">
-        <div className="p-8 border-b border-slate-50 flex flex-col lg:flex-row justify-between items-center gap-6 bg-white">
-          <div className="flex flex-wrap items-center gap-4">
-            <div className="flex items-center gap-3 bg-slate-50 p-2 rounded-2xl border border-slate-100">
-               <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-3">Filter Rayon:</span>
-               <select value={filterRayon} onChange={e => setFilterRayon(e.target.value)} className="text-[11px] border-none rounded-xl px-4 py-2 outline-none font-bold bg-white text-slate-700 cursor-pointer shadow-sm">
-                 <option value="Semua">Semua Rayon</option>
-                 <option value="Rayon 1 Abepura">Rayon 1 Abepura</option>
-                 <option value="Rayon 2 Sentani Waena">Rayon 2 Sentani Waena</option>
-               </select>
+      {/* Search & Bulk Action Section */}
+      <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden mb-8">
+        <div className="p-8 space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Filter Rayon</label>
+              <select value={filterRayon} onChange={e => setFilterRayon(e.target.value)} className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 text-xs font-bold outline-none focus:ring-2 focus:ring-blue-500/20">
+                <option value="Semua">Semua Rayon</option>
+                <option value="Rayon 1 Abepura">Rayon 1 Abepura</option>
+                <option value="Rayon 2 Sentani Waena">Rayon 2 Sentani Waena</option>
+              </select>
             </div>
-            <div className="flex items-center gap-3 bg-slate-50 p-2 rounded-2xl border border-slate-100">
-               <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-3">Status:</span>
-               <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)} className="text-[11px] border-none rounded-xl px-4 py-2 outline-none font-bold bg-white text-slate-700 cursor-pointer shadow-sm">
-                 <option value="Semua">Semua Status</option>
-                 <option value="Tetap">Jemaat Tetap</option>
-                 <option value="Calon">Calon Jemaat</option>
-               </select>
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Status Keanggotaan</label>
+              <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)} className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 text-xs font-bold outline-none focus:ring-2 focus:ring-blue-500/20">
+                <option value="Semua">Semua Status</option>
+                <option value="Tetap">Tetap</option>
+                <option value="Calon">Calon</option>
+              </select>
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Jenis Kelamin</label>
+              <select value={filterGender} onChange={e => setFilterGender(e.target.value)} className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 text-xs font-bold outline-none focus:ring-2 focus:ring-blue-500/20">
+                <option value="Semua">Semua Jenis Kelamin</option>
+                <option value="Laki-Laki">Laki-Laki</option>
+                <option value="Perempuan">Perempuan</option>
+              </select>
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Status Pernikahan</label>
+              <select value={filterMarital} onChange={e => setFilterMarital(e.target.value)} className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 text-xs font-bold outline-none focus:ring-2 focus:ring-blue-500/20">
+                <option value="Semua">Semua Status Nikah</option>
+                <option value="Belum Menikah">Belum Menikah</option>
+                <option value="Menikah">Menikah</option>
+                <option value="Duda">Duda</option>
+                <option value="Janda">Janda</option>
+              </select>
             </div>
           </div>
 
-          <div className="relative w-full max-w-md">
-            <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
-            <input 
-               type="text" 
-               value={searchTerm}
-               onChange={e => setSearchTerm(e.target.value)}
-               className="w-full pl-14 pr-8 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold outline-none focus:bg-white focus:ring-4 focus:ring-blue-500/5 transition-all placeholder:text-slate-400" 
-               placeholder="Cari nama jemaat atau nomor..." 
-            />
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-4 border-t border-slate-50">
+            {/* Bulk Actions Display */}
+            <div className="flex items-center gap-4">
+              {selectedIds.size > 0 && (
+                <div className="flex items-center gap-3 animate-in fade-in slide-in-from-left-2">
+                  <span className="text-xs font-black text-blue-600 bg-blue-50 px-4 py-2 rounded-xl">{selectedIds.size} Terpilih</span>
+                  <button 
+                    onClick={handleBulkDelete}
+                    className="p-2.5 bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-600 hover:text-white transition-all shadow-sm"
+                    title="Hapus Terpilih"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                  <div className="relative group">
+                    <button className="flex items-center gap-2 px-4 py-2 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 transition-all">
+                      Ubah Status <ChevronDown size={14} />
+                    </button>
+                    <div className="absolute top-full left-0 mt-2 w-48 bg-white border border-slate-100 rounded-2xl shadow-2xl hidden group-hover:block z-20">
+                      <button onClick={() => handleBulkStatusUpdate('Tetap')} className="w-full text-left px-5 py-3 text-[10px] font-black uppercase hover:bg-slate-50 text-slate-600 rounded-t-2xl">Set Jadi Tetap</button>
+                      <button onClick={() => handleBulkStatusUpdate('Calon')} className="w-full text-left px-5 py-3 text-[10px] font-black uppercase hover:bg-slate-50 text-slate-600 rounded-b-2xl">Set Jadi Calon</button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="relative w-full max-w-md">
+              <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+              <input 
+                 type="text" 
+                 value={searchTerm}
+                 onChange={e => setSearchTerm(e.target.value)}
+                 className="w-full pl-14 pr-8 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold outline-none focus:bg-white focus:ring-4 focus:ring-blue-500/5 transition-all placeholder:text-slate-400" 
+                 placeholder="Cari nama jemaat atau nomor..." 
+              />
+            </div>
           </div>
         </div>
 
@@ -361,19 +450,27 @@ export const Jemaat: React.FC<JemaatProps> = ({ menuId, onBack, churchInfo, data
           <table className="w-full text-left">
             <thead>
               <tr className="bg-slate-50/50 text-slate-400 text-[10px] font-black uppercase tracking-[0.2em]">
-                <th className="px-8 py-6 text-center w-20">No.</th>
+                <th className="px-8 py-6 text-center w-20">
+                  <button onClick={toggleSelectAll} className="p-1 rounded bg-white border border-slate-200 text-blue-600">
+                    {selectedIds.size === filteredData.length && filteredData.length > 0 ? <CheckSquare size={16} /> : <Square size={16} />}
+                  </button>
+                </th>
                 <th className="px-8 py-6">Profil</th>
                 <th className="px-8 py-6">Nama Lengkap</th>
-                <th className="px-8 py-6">Nomer Jemaat</th>
-                <th className="px-8 py-6">Rayon Pelayanan</th>
+                <th className="px-8 py-6">Identitas</th>
+                <th className="px-8 py-6">Status Nikah</th>
                 <th className="px-8 py-6 text-center">Status</th>
-                <th className="px-8 py-6 text-center">Tindakan</th>
+                <th className="px-8 py-6 text-center">Aksi</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
               {filteredData.length > 0 ? filteredData.map((item, idx) => (
-                <tr key={item.id} className="hover:bg-blue-50/30 transition-all duration-300 group">
-                  <td className="px-8 py-8 text-center text-slate-400 font-bold text-xs">{idx + 1}</td>
+                <tr key={item.id} className={`hover:bg-blue-50/30 transition-all duration-300 group ${selectedIds.has(item.id) ? 'bg-blue-50/50' : ''}`}>
+                  <td className="px-8 py-8 text-center">
+                    <button onClick={() => toggleSelectOne(item.id)} className={`p-1 rounded transition-colors ${selectedIds.has(item.id) ? 'text-blue-600' : 'text-slate-300'}`}>
+                      {selectedIds.has(item.id) ? <CheckSquare size={18} /> : <Square size={18} />}
+                    </button>
+                  </td>
                   <td className="px-8 py-8">
                      <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-white shadow-lg mx-auto transform transition-transform group-hover:rotate-3 group-hover:scale-110">
                         <img src={item.foto} className="w-full h-full object-cover" alt="Profil" />
@@ -385,8 +482,11 @@ export const Jemaat: React.FC<JemaatProps> = ({ menuId, onBack, churchInfo, data
                   </td>
                   <td className="px-8 py-8">
                     <div className="bg-blue-50 text-blue-600 font-black text-xs px-3 py-1 rounded-lg inline-block">#{item.nomerJemaat}</div>
+                    <div className="text-[9px] text-slate-400 font-black uppercase mt-1">{item.rayon}</div>
                   </td>
-                  <td className="px-8 py-8 font-bold text-slate-500 text-[10px] uppercase tracking-wider">{item.rayon}</td>
+                  <td className="px-8 py-8">
+                    <div className="text-slate-600 text-[10px] font-black uppercase tracking-wider">{item.statusKawin}</div>
+                  </td>
                   <td className="px-8 py-8 text-center">
                      <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest ${item.status === 'Tetap' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
                        {item.status}

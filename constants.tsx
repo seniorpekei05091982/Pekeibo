@@ -25,7 +25,9 @@ import {
   Church,
   ShieldCheck,
   MapPin,
-  ClipboardList
+  ClipboardList,
+  Layers,
+  Map
 } from 'lucide-react';
 import { NavItem } from './types';
 
@@ -38,8 +40,41 @@ export const SIDEBAR_MENU: NavItem[] = [
   {
     id: 'dashboard',
     label: 'Beranda',
-    icon: <LayoutDashboard size={18} />,
-    path: '/'
+    icon: <LayoutDashboard size={18} />
+  },
+  {
+    id: 'header-sinode',
+    label: 'ADMINISTRASI SINODE',
+    isHeader: true,
+    minRole: 'Sinode'
+  },
+  {
+    id: 'master-klasis',
+    label: 'Daftar Klasis',
+    icon: <Map size={18} />,
+    minRole: 'Sinode'
+  },
+  {
+    id: 'header-klasis',
+    label: 'ADMINISTRASI KLASIS',
+    isHeader: true,
+    minRole: 'Klasis'
+  },
+  {
+    id: 'master-jemaat-lokal',
+    label: 'Daftar Jemaat',
+    icon: <Church size={18} />,
+    minRole: 'Klasis'
+  },
+  {
+    id: 'header-jemaat',
+    label: 'DATA JEMAAT LOKAL',
+    isHeader: true
+  },
+  {
+    id: 'jemaat',
+    label: 'Database Jemaat',
+    icon: <Users size={18} />
   },
   {
     id: 'pastoral',
@@ -54,24 +89,9 @@ export const SIDEBAR_MENU: NavItem[] = [
     ]
   },
   {
-    id: 'header-master',
-    label: 'DATA MASTER',
-    isHeader: true
-  },
-  {
-    id: 'jemaat',
-    label: 'Data Jemaat',
-    icon: <Users size={18} />
-  },
-  {
     id: 'jadwal',
     label: 'Jadwal Ibadah',
     icon: <Calendar size={18} />
-  },
-  {
-    id: 'pelayanan',
-    label: 'Daftar Pelayanan',
-    icon: <UserCheck size={18} />
   },
   {
     id: 'komisi',
@@ -85,41 +105,19 @@ export const SIDEBAR_MENU: NavItem[] = [
     ]
   },
   {
-    id: 'talenta',
-    label: 'Bakat & Talenta',
-    icon: <Star size={18} />
+    id: 'header-finance',
+    label: 'KEUANGAN & ASET',
+    isHeader: true
   },
   {
     id: 'keuangan',
-    label: 'Keuangan Gereja',
+    label: 'Keuangan',
     icon: <Wallet size={18} />
   },
   {
     id: 'aset',
-    label: 'Inventaris Aset',
+    label: 'Aset Inventaris',
     icon: <Box size={18} />
-  },
-  {
-    id: 'header-laporan',
-    label: 'LAPORAN & STATISTIK',
-    isHeader: true
-  },
-  {
-    id: 'laporan-jemaat',
-    label: 'Laporan Jemaat',
-    icon: <PieChart size={18} />,
-    children: [
-      { id: 'lap-ultah', label: 'Ulang Tahun', icon: <Calendar size={14} /> },
-      { id: 'lap-usia', label: 'Kategori Usia', icon: <PieChart size={14} /> },
-      { id: 'lap-usia-filter', label: 'Filter Usia Kustom', icon: <ClipboardList size={14} /> },
-      { id: 'lap-jk', label: 'Jenis Kelamin', icon: <Users size={14} /> },
-      { id: 'lap-pelayanan', label: 'Aktif Pelayanan', icon: <UserCheck size={14} /> },
-    ]
-  },
-  {
-    id: 'cetak-jemaat',
-    label: 'Cetak Kartu Jemaat',
-    icon: <Printer size={18} />
   },
   {
     id: 'header-settings',
@@ -127,28 +125,18 @@ export const SIDEBAR_MENU: NavItem[] = [
     isHeader: true
   },
   {
-    id: 'users-man',
-    label: 'Manajemen User',
-    icon: <Settings size={18} />,
-    children: [
-      { id: 'users', label: 'Daftar Pengguna', icon: <Users size={14} /> },
-      { id: 'profile-user', label: 'Profil Saya', icon: <Settings size={14} /> },
-    ]
-  },
-  {
-    id: 'backup',
-    label: 'Cadangkan Data (Backup)',
-    icon: <Database size={18} />
+    id: 'users',
+    label: 'Hak Akses & User',
+    icon: <ShieldCheck size={18} />
   },
   {
     id: 'profile-gereja',
-    label: 'Profil Gereja',
-    icon: <Church size={18} />
+    label: 'Profil Sinode/Klasis',
+    icon: <Layers size={18} />
   },
   {
     id: 'logout',
     label: 'KELUAR SISTEM',
-    icon: <LogOut size={18} className="text-rose-500" />,
-    path: '/logout'
+    icon: <LogOut size={18} className="text-rose-500" />
   }
 ];

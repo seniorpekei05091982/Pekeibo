@@ -59,13 +59,11 @@ const App: React.FC = () => {
   ]);
 
   const [jadwalData, setJadwalData] = useState<any[]>([
-    { id: '1', namaIbadah: 'Ibadah Raya 1', hari: 'Minggu', jamMulai: '06:00:00', jamSelesai: '08:00:00', lokasi: 'Lantai 1 & 2', keterangan: '-' },
-    { id: '2', namaIbadah: 'Sekolah Minggu', hari: 'Minggu', jamMulai: '08:00:00', jamSelesai: '09:30:00', lokasi: 'Aula', keterangan: '-' }
+    { id: '1', namaIbadah: 'Ibadah Raya 1', hari: 'Minggu', jamMulai: '06:00:00', jamSelesai: '08:00:00', lokasi: 'Lantai 1 & 2', keterangan: '-' }
   ]);
 
   const [pelayananData, setPelayananData] = useState<any[]>([
-    { id: '1', namaPelayanan: 'Majelis', keterangan: '-' },
-    { id: '2', namaPelayanan: 'Diaken', keterangan: '-' }
+    { id: '1', namaPelayanan: 'Majelis', keterangan: '-' }
   ]);
 
   const [asetData, setAsetData] = useState<any[]>([
@@ -73,8 +71,7 @@ const App: React.FC = () => {
   ]);
 
   const [talentaData, setTalentaData] = useState<any[]>([
-    { id: '1', namaTalenta: 'Menyanyi', keterangan: '-', dibuatOleh: 'admin', dibuatTanggal: '04/12/2024' },
-    { id: '2', namaTalenta: 'Bermain Musik', keterangan: '-', dibuatOleh: 'admin', dibuatTanggal: '04/12/2024' }
+    { id: '1', namaTalenta: 'Menyanyi', keterangan: '-', dibuatOleh: 'admin', dibuatTanggal: '04/12/2024' }
   ]);
 
   const [keuanganData, setKeuanganData] = useState<any[]>([]);
@@ -176,6 +173,7 @@ const App: React.FC = () => {
       case 'lap-talenta': return <LaporanGeneric type="Talenta" jemaatData={jemaatData} churchInfo={churchInfo} onBack={() => setActiveMenu('dashboard')} />;
       case 'lap-keluarga': return <LaporanGeneric type="Keluarga" jemaatData={jemaatData} churchInfo={churchInfo} onBack={() => setActiveMenu('dashboard')} />;
       case 'lap-pelayanan': return <LaporanGeneric type="Pelayanan" jemaatData={jemaatData} churchInfo={churchInfo} onBack={() => setActiveMenu('dashboard')} />;
+      case 'lap-ibadah': return <LaporanGeneric type="Ibadah" jemaatData={jemaatData} churchInfo={churchInfo} onBack={() => setActiveMenu('dashboard')} />;
       
       default:
         return (

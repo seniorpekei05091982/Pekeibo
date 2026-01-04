@@ -43,7 +43,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   const filteredJemaat = useMemo(() => {
     return jemaatData.filter(row => {
       const statusMatch = filterStatus === 'Semua' || row.status === filterStatus;
-      const rayonMatch = filterRayon === 'Semua' || row.komsel === filterRayon;
+      const rayonMatch = filterRayon === 'Semua' || row.rayon === filterRayon;
       return statusMatch && rayonMatch;
     });
   }, [jemaatData, filterStatus, filterRayon]);
@@ -122,10 +122,9 @@ const Dashboard: React.FC<DashboardProps> = ({
               onChange={(e) => setFilterRayon(e.target.value)}
               className="text-[10px] font-black uppercase bg-slate-50 border border-slate-200 rounded px-3 py-2 outline-none focus:ring-1 focus:ring-blue-500 tracking-wider text-slate-600 cursor-pointer"
             >
-              <option value="Semua">Lingkungan: Semua</option>
-              <option value="Petrus">Petrus</option>
-              <option value="Paulus">Paulus</option>
-              <option value="Abraham">Abraham</option>
+              <option value="Semua">Rayon: Semua</option>
+              <option value="Rayon 1 Abepura">Rayon 1 Abepura</option>
+              <option value="Rayon 2 Sentani Waena">Rayon 2 Sentani Waena</option>
             </select>
           </div>
         </div>
@@ -133,8 +132,8 @@ const Dashboard: React.FC<DashboardProps> = ({
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <DataTable 
             title="Tabel Jemaat Baru" 
-            headers={['Nama', 'Lingkungan', 'Status']} 
-            data={filteredJemaat.slice(0, 5).map(r => [r.nama, r.komsel, r.status || 'Tetap'])}
+            headers={['Nama', 'Rayon', 'Status']} 
+            data={filteredJemaat.slice(0, 5).map(r => [r.nama, r.rayon, r.status || 'Tetap'])}
             onViewDetails={(row) => {
               const fullData = jemaatData.find(d => d.nama === row[0]);
               setSelectedItem(fullData);
@@ -161,7 +160,7 @@ const Dashboard: React.FC<DashboardProps> = ({
               </div>
               <div>
                 <h4 className="text-xl font-bold text-slate-800">{selectedItem.nama}</h4>
-                <p className="text-sm text-slate-500 font-medium">{selectedItem.nomerJemaat} - {selectedItem.komsel}</p>
+                <p className="text-sm text-slate-500 font-medium">{selectedItem.nomerJemaat} - {selectedItem.rayon}</p>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4 text-sm">

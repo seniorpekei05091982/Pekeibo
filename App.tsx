@@ -5,6 +5,9 @@ import { Header } from './components/Header';
 import Dashboard from './pages/Dashboard';
 import { PenyerahanAnak } from './pages/PenyerahanAnak';
 import { Katekisasi } from './pages/Katekisasi';
+import { Baptisan } from './pages/Baptisan';
+import { Kedukaan } from './pages/Kedukaan';
+import { Konseling } from './pages/Konseling';
 import { UserPlus, Trash2, Mail, Phone, MapPin, User as UserIcon, Save } from 'lucide-react';
 
 interface JemaatEntry {
@@ -59,6 +62,12 @@ const App: React.FC = () => {
         return <PenyerahanAnak />;
       case 'katekisasi':
         return <Katekisasi />;
+      case 'baptisan':
+        return <Baptisan />;
+      case 'kedukaan':
+        return <Kedukaan />;
+      case 'konseling':
+        return <Konseling />;
       case 'jemaat':
         return (
           <div className="p-6 max-w-6xl mx-auto space-y-8 animate-in slide-in-from-bottom-4 duration-500">
@@ -73,7 +82,6 @@ const App: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Form Section */}
               <div className="lg:col-span-1">
                 <form onSubmit={handleAddJemaat} className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-5 sticky top-20">
                   <h3 className="text-lg font-bold text-slate-700 flex items-center gap-2 mb-2">
@@ -148,7 +156,6 @@ const App: React.FC = () => {
                 </form>
               </div>
 
-              {/* List Section */}
               <div className="lg:col-span-2 space-y-4">
                 <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                   <div className="p-4 bg-slate-50 border-b border-slate-200">
@@ -216,18 +223,13 @@ const App: React.FC = () => {
 
   return (
     <div className="flex h-screen overflow-hidden bg-slate-50">
-      {/* Sidebar */}
       <aside className="hidden lg:block">
         <Sidebar onSelect={setActiveMenu} activeId={activeMenu} />
       </aside>
-
-      {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <Header />
-        
         <main className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200">
           {renderContent()}
-          
           <footer className="p-6 text-xs text-slate-400 flex flex-col sm:flex-row justify-between items-center border-t border-slate-200 mt-auto bg-white/50">
             <span>Copyright &copy; 2024 <strong className="text-slate-500">Era Sistem Media</strong>. All rights reserved.</span>
             <span className="mt-2 sm:mt-0 font-semibold text-blue-600 uppercase tracking-tighter">Sistem Informasi Gereja Pro v2.0</span>

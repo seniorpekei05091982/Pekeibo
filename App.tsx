@@ -105,15 +105,21 @@ const App: React.FC = () => {
   });
 
   const handleLogout = () => {
-    if (window.confirm('Keluar dari sistem?')) {
+    // Memberikan feedback konfirmasi yang jelas
+    const confirmLogout = window.confirm('Apakah Anda yakin ingin keluar dari sistem SIM GEREJA?');
+    if (confirmLogout) {
       setIsLoggedIn(false);
       setActiveMenu('dashboard');
+      // Opsional: bersihkan state lain jika diperlukan
     }
   };
 
   const handleMenuSelect = (id: string) => {
-    if (id === 'logout') handleLogout();
-    else setActiveMenu(id);
+    if (id === 'logout') {
+      handleLogout();
+    } else {
+      setActiveMenu(id);
+    }
   };
 
   const onLoginSuccess = (role: UserRole) => {

@@ -19,7 +19,6 @@ const StatBox: React.FC<StatBoxProps> = ({ label, count, color, icon: Icon, acti
       <p className="text-[10px] font-black uppercase leading-tight opacity-60 truncate tracking-[0.2em] mb-1.5">{label}</p>
       <p className="text-3xl font-black leading-tight tracking-tighter drop-shadow-sm">{count}</p>
     </div>
-    {/* Decorative Glow */}
     <div className="absolute top-[-50%] left-[-50%] w-full h-full bg-white/5 rounded-full blur-3xl group-hover:translate-x-1/2 transition-transform duration-1000"></div>
   </div>
 );
@@ -33,12 +32,12 @@ interface TopStatsBarProps {
 
 export const TopStatsBar: React.FC<TopStatsBarProps> = ({ jemaatCount = 1, jadwalCount = 2, pelayananCount = 2, asetCount = 1 }) => {
   const stats = [
-    { label: 'Congregation', count: jemaatCount, color: 'bg-blue-600', icon: Users, active: true },
-    { label: 'Schedule', count: jadwalCount, color: 'bg-emerald-600', icon: Calendar },
-    { label: 'Service', count: pelayananCount, color: 'bg-rose-600', icon: List },
-    { label: 'Commission', count: 4, color: 'bg-orange-500', icon: UsersRound },
-    { label: 'Talents', count: 4, color: 'bg-indigo-600', icon: Star },
-    { label: 'Inventory', count: asetCount, color: 'bg-slate-700', icon: Box },
+    { label: 'Jemaat', count: jemaatCount, color: 'bg-blue-600', icon: Users, active: true },
+    { label: 'Ibadah', count: jadwalCount, color: 'bg-emerald-600', icon: Calendar },
+    { label: 'Pelayanan', count: pelayananCount, color: 'bg-rose-600', icon: List },
+    { label: 'Komisi', count: 4, color: 'bg-orange-500', icon: UsersRound },
+    { label: 'Bakat', count: 4, color: 'bg-indigo-600', icon: Star },
+    { label: 'Aset', count: asetCount, color: 'bg-slate-700', icon: Box },
   ];
 
   return (

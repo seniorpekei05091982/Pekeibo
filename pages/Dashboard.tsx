@@ -12,7 +12,6 @@ import {
   Skull,
   TrendingUp,
   Filter,
-  MessageCircle,
   Box
 } from 'lucide-react';
 import { StatCard } from '../components/StatCard';
@@ -34,7 +33,6 @@ const Dashboard: React.FC<DashboardProps> = ({
   jadwalData, 
   pelayananData, 
   asetData,
-  keuanganData 
 }) => {
   const [filterStatus, setFilterStatus] = useState('Semua');
   const [filterRayon, setFilterRayon] = useState('Semua');
@@ -49,49 +47,46 @@ const Dashboard: React.FC<DashboardProps> = ({
   }, [jemaatData, filterStatus, filterRayon]);
 
   const stats = [
-    { title: 'Jemaat', value: jemaatData.length, color: 'gray', icon: <Users size={48} />, menuId: 'jemaat' },
+    { title: 'Data Jemaat', value: jemaatData.length, color: 'blue', icon: <Users size={48} />, menuId: 'jemaat' },
     { title: 'Jadwal Ibadah', value: jadwalData.length, color: 'green', icon: <Calendar size={48} />, menuId: 'jadwal' },
-    { title: 'Daftar Pelayanan', value: pelayananData.length, color: 'red', icon: <List size={48} />, menuId: 'pelayanan' },
-    { title: 'Komisi', value: 4, color: 'yellow', icon: <UsersRound size={48} />, menuId: 'komisi' },
-    { title: 'Penyerahan Anak', value: 4, color: 'slate', icon: <UserPlus size={48} />, menuId: 'penyerahan' },
-    { title: 'Baptisan Air', value: 5, color: 'green', icon: <Droplets size={48} />, menuId: 'baptisan' },
-    { title: 'Kedukaan', value: 2, color: 'yellow', icon: <Skull size={48} />, menuId: 'kedukaan' },
+    { title: 'Daftar Pelayan', value: pelayananData.length, color: 'red', icon: <List size={48} />, menuId: 'pelayanan' },
+    { title: 'Jumlah Komisi', value: 4, color: 'yellow', icon: <UsersRound size={48} />, menuId: 'komisi' },
     { title: 'Aset Gereja', value: asetData.length, color: 'gray', icon: <Box size={48} />, menuId: 'aset' },
   ];
 
   return (
-    <div className="p-6 space-y-6 animate-in fade-in duration-500">
+    <div className="p-8 space-y-8 animate-in fade-in duration-500">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
-           <TrendingUp className="text-blue-500" /> Dashboard
+        <h1 className="text-3xl font-black text-slate-900 tracking-tighter flex items-center gap-3 uppercase">
+           <TrendingUp className="text-blue-600" size={32} /> Beranda Utama
         </h1>
-        <div className="text-xs text-slate-500 font-bold bg-white px-3 py-1.5 rounded-lg shadow-sm border border-slate-200 uppercase tracking-wider">
-          MAIN MENU / Dashboard
+        <div className="text-[10px] text-slate-400 font-black bg-white px-4 py-2 rounded-2xl shadow-sm border border-slate-100 uppercase tracking-[0.2em]">
+          Menu Utama / Beranda
         </div>
       </div>
 
       {/* Welcome Banner */}
-      <div className="bg-white p-8 rounded-xl border border-slate-200 shadow-sm relative overflow-hidden group">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-blue-500/10 transition-colors duration-500"></div>
-        <div className="absolute bottom-0 left-0 w-32 h-32 bg-orange-500/5 rounded-full translate-y-1/2 -translate-x-1/2"></div>
+      <div className="bg-slate-900 p-12 rounded-[3rem] shadow-2xl relative overflow-hidden group border-b-[12px] border-orange-500">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-orange-600/10 rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl"></div>
         
-        <div className="relative z-10 flex flex-col items-start space-y-1">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="h-1 w-12 bg-blue-500 rounded-full"></div>
-            <span className="text-[10px] font-black text-blue-500 uppercase tracking-[0.2em]">Selamat Datang</span>
+        <div className="relative z-10 flex flex-col items-start space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="h-[2px] w-12 bg-orange-500 rounded-full"></div>
+            <span className="text-[11px] font-black text-orange-400 uppercase tracking-[0.4em]">Panel Kendali Sistem</span>
           </div>
           
-          <h3 className="text-xl md:text-2xl font-bold text-slate-800 leading-tight uppercase tracking-tight">
-            Gereja Kemah Injil (KINGMI) Di Tanah Papua
+          <h3 className="text-3xl md:text-5xl font-black text-white leading-none uppercase tracking-tighter">
+            Gereja Kemah Injil (KINGMI) <br/><span className="text-blue-500">Di Tanah Papua</span>
           </h3>
-          <p className="text-xs md:text-sm font-bold text-blue-600/70 uppercase tracking-widest pt-2 border-t border-slate-100 w-full max-w-xl mt-1">
-            Sistem Informasi Manajemen Gereja Terintegrasi
+          <p className="text-sm md:text-base font-bold text-slate-400 uppercase tracking-widest max-w-2xl leading-relaxed">
+            Selamat datang di Sistem Informasi Manajemen Gereja Terintegrasi (SIM GEREJA PRO).
           </p>
         </div>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
         {stats.map((s, idx) => (
           <StatCard 
             key={idx} 
@@ -102,36 +97,36 @@ const Dashboard: React.FC<DashboardProps> = ({
       </div>
 
       {/* Dynamic Data Tables */}
-      <div className="space-y-4">
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200 flex flex-wrap items-center gap-4">
-          <div className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase tracking-wider">
-            <Filter size={14} className="text-blue-500" /> Filter Jemaat:
+      <div className="space-y-6">
+        <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 flex flex-wrap items-center gap-6">
+          <div className="flex items-center gap-3 text-xs font-black text-slate-500 uppercase tracking-widest">
+            <Filter size={16} className="text-blue-600" /> Filter Jemaat Cepat:
           </div>
           <div className="flex gap-4 items-center">
             <select 
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="text-[10px] font-black uppercase bg-slate-50 border border-slate-200 rounded px-3 py-2 outline-none focus:ring-1 focus:ring-blue-500 tracking-wider text-slate-600 cursor-pointer"
+              className="text-[10px] font-black uppercase bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 outline-none focus:ring-4 focus:ring-blue-500/5 tracking-wider text-slate-600 cursor-pointer shadow-inner"
             >
-              <option value="Semua">Status: Semua</option>
-              <option value="Tetap">Tetap</option>
-              <option value="Calon">Calon</option>
+              <option value="Semua">Semua Status</option>
+              <option value="Tetap">Jemaat Tetap</option>
+              <option value="Calon">Calon Jemaat</option>
             </select>
             <select 
               value={filterRayon}
               onChange={(e) => setFilterRayon(e.target.value)}
-              className="text-[10px] font-black uppercase bg-slate-50 border border-slate-200 rounded px-3 py-2 outline-none focus:ring-1 focus:ring-blue-500 tracking-wider text-slate-600 cursor-pointer"
+              className="text-[10px] font-black uppercase bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 outline-none focus:ring-4 focus:ring-blue-500/5 tracking-wider text-slate-600 cursor-pointer shadow-inner"
             >
-              <option value="Semua">Rayon: Semua</option>
+              <option value="Semua">Semua Rayon</option>
               <option value="Rayon 1 Abepura">Rayon 1 Abepura</option>
               <option value="Rayon 2 Sentani Waena">Rayon 2 Sentani Waena</option>
             </select>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <DataTable 
-            title="Tabel Jemaat Baru" 
+            title="Pendaftaran Jemaat Terbaru" 
             headers={['Nama', 'Rayon', 'Status']} 
             data={filteredJemaat.slice(0, 5).map(r => [r.nama, r.rayon, r.status || 'Tetap'])}
             onViewDetails={(row) => {
@@ -140,9 +135,9 @@ const Dashboard: React.FC<DashboardProps> = ({
             }}
           />
           <DataTable 
-            title="Jadwal Ibadah Terdekat" 
-            headers={['Ibadah', 'Waktu', 'Ruang']} 
-            data={jadwalData.slice(0, 5).map(j => [j.namaIbadah, `${j.hari} ${j.jamMulai.substring(0,5)}`, j.lokasi])}
+            title="Jadwal Ibadah Minggu Ini" 
+            headers={['Ibadah', 'Waktu', 'Lokasi']} 
+            data={jadwalData.slice(0, 5).map(j => [j.namaIbadah, `${j.hari}, ${j.jamMulai.substring(0,5)}`, j.lokasi])}
           />
         </div>
       </div>
@@ -150,32 +145,32 @@ const Dashboard: React.FC<DashboardProps> = ({
       <Modal 
         isOpen={!!selectedItem} 
         onClose={() => setSelectedItem(null)} 
-        title="Detail Jemaat"
+        title="Detail Ringkas Jemaat"
       >
         {selectedItem && (
-          <div className="space-y-4">
-            <div className="flex items-center gap-4 p-4 bg-blue-50 rounded-xl">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 overflow-hidden">
-                {selectedItem.foto ? <img src={selectedItem.foto} alt="Avatar" className="w-full h-full object-cover" /> : <Users size={32} />}
+          <div className="space-y-6">
+            <div className="flex items-center gap-6 p-6 bg-slate-50 rounded-[2rem] border border-slate-100">
+              <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center text-blue-600 overflow-hidden shadow-xl border-4 border-white">
+                {selectedItem.foto ? <img src={selectedItem.foto} alt="Foto" className="w-full h-full object-cover" /> : <Users size={40} />}
               </div>
               <div>
-                <h4 className="text-xl font-bold text-slate-800">{selectedItem.nama}</h4>
-                <p className="text-sm text-slate-500 font-medium">{selectedItem.nomerJemaat} - {selectedItem.rayon}</p>
+                <h4 className="text-2xl font-black text-slate-900 tracking-tighter uppercase">{selectedItem.nama}</h4>
+                <p className="text-xs text-blue-600 font-black tracking-widest mt-1">ID: {selectedItem.nomerJemaat} • {selectedItem.rayon}</p>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div className="p-3 bg-slate-50 rounded-lg">
-                <p className="text-slate-400 font-bold text-[10px] uppercase">Jenis Kelamin</p>
-                <p className="font-semibold text-slate-700">{selectedItem.jenisKelamin || '-'}</p>
+            <div className="grid grid-cols-2 gap-4 text-xs">
+              <div className="p-4 bg-slate-50 rounded-2xl">
+                <p className="text-slate-400 font-black text-[9px] uppercase tracking-widest mb-1">Jenis Kelamin</p>
+                <p className="font-bold text-slate-800 text-sm">{selectedItem.jenisKelamin || '-'}</p>
               </div>
-              <div className="p-3 bg-slate-50 rounded-lg">
-                <p className="text-slate-400 font-bold text-[10px] uppercase">Telepon</p>
-                <p className="font-semibold text-slate-700">{selectedItem.nomerHP || '-'}</p>
+              <div className="p-4 bg-slate-50 rounded-2xl">
+                <p className="text-slate-400 font-black text-[9px] uppercase tracking-widest mb-1">Nomor Telepon</p>
+                <p className="font-bold text-slate-800 text-sm">{selectedItem.nomerHP || '-'}</p>
               </div>
             </div>
-            <div className="p-3 bg-slate-50 rounded-lg">
-              <p className="text-slate-400 font-bold text-[10px] uppercase">Alamat</p>
-              <p className="text-slate-700 leading-relaxed italic">"{selectedItem.alamat || '-'}"</p>
+            <div className="p-6 bg-slate-50 rounded-2xl">
+              <p className="text-slate-400 font-black text-[9px] uppercase tracking-widest mb-1">Alamat Terdaftar</p>
+              <p className="text-slate-800 font-medium leading-relaxed italic">"{selectedItem.alamat || 'Alamat tidak tersedia'}"</p>
             </div>
           </div>
         )}

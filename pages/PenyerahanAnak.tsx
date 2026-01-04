@@ -3,7 +3,7 @@ import React, { useState, useMemo } from 'react';
 import { 
   Plus, Search, FileSpreadsheet, FileText, Copy, Printer, 
   ChevronDown, Edit, Eye, Trash2, ArrowLeft, Calendar, User,
-  Droplets, Filter, CheckCircle2, AlertCircle
+  Droplets, Filter, CheckCircle2, AlertCircle, Home
 } from 'lucide-react';
 import { TopStatsBar } from '../components/TopStatsBar';
 import { Modal } from '../components/Modal';
@@ -64,7 +64,7 @@ const INITIAL_DATA: ChildDedication[] = [
   { id: '3', nomerKartu: '203/KPA/2022', namaAnak: 'Amir S', jenisKelamin: 'Laki-Laki', tempatLahir: 'Surabaya', tanggalLahir: '04/09/2022', namaAyah: 'Charles', namaIbu: 'Dini', alamat: 'Jl. Pemuda 10', tanggalPenyerahan: '11/10/2022' },
 ];
 
-export const PenyerahanAnak: React.FC = () => {
+export const PenyerahanAnak: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const [data, setData] = useState<ChildDedication[]>(INITIAL_DATA);
   const [mode, setMode] = useState<ViewMode>('list');
   const [selected, setSelected] = useState<ChildDedication | null>(null);
@@ -169,9 +169,18 @@ export const PenyerahanAnak: React.FC = () => {
       <TopStatsBar />
       
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h1 className="text-xl font-bold text-slate-700 flex items-center gap-2">
-          <UserPlusIcon /> Penyerahan Anak
-        </h1>
+        <div className="flex items-center gap-4">
+          <button 
+            onClick={onBack}
+            className="p-2 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg text-slate-600 transition-all shadow-sm"
+            title="Kembali ke Dashboard"
+          >
+            <Home size={18} />
+          </button>
+          <h1 className="text-xl font-bold text-slate-700 flex items-center gap-2">
+            <UserPlusIcon /> Penyerahan Anak
+          </h1>
+        </div>
         <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
           MAIN MENU / Pelayanan Pastoral / <span className="text-blue-500">Penyerahan Anak</span>
         </div>

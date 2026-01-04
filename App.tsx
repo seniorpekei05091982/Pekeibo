@@ -57,24 +57,33 @@ const App: React.FC = () => {
   const renderContent = () => {
     switch (activeMenu) {
       case 'dashboard':
-        return <Dashboard />;
+        return <Dashboard onSelectMenu={setActiveMenu} />;
       case 'penyerahan':
-        return <PenyerahanAnak />;
+        return <PenyerahanAnak onBack={() => setActiveMenu('dashboard')} />;
       case 'katekisasi':
-        return <Katekisasi />;
+        return <Katekisasi onBack={() => setActiveMenu('dashboard')} />;
       case 'baptisan':
-        return <Baptisan />;
+        return <Baptisan onBack={() => setActiveMenu('dashboard')} />;
       case 'kedukaan':
-        return <Kedukaan />;
+        return <Kedukaan onBack={() => setActiveMenu('dashboard')} />;
       case 'konseling':
-        return <Konseling />;
+        return <Konseling onBack={() => setActiveMenu('dashboard')} />;
       case 'jemaat':
         return (
           <div className="p-6 max-w-6xl mx-auto space-y-8 animate-in slide-in-from-bottom-4 duration-500">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-2xl font-bold text-slate-800">Master Data Jemaat</h1>
-                <p className="text-slate-500 text-sm font-medium mt-1">Kelola informasi seluruh jemaat gereja secara terpusat.</p>
+             <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <button 
+                  onClick={() => setActiveMenu('dashboard')}
+                  className="p-2 bg-slate-200 hover:bg-slate-300 rounded-lg text-slate-600 transition-colors"
+                  title="Kembali ke Dashboard"
+                >
+                  <ArrowLeft size={20} />
+                </button>
+                <div>
+                  <h1 className="text-2xl font-bold text-slate-800">Master Data Jemaat</h1>
+                  <p className="text-slate-500 text-sm font-medium mt-1">Kelola informasi seluruh jemaat gereja secara terpusat.</p>
+                </div>
               </div>
               <div className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold uppercase tracking-wider">
                 Total: {jemaatList.length} Jemaat
@@ -243,6 +252,12 @@ const App: React.FC = () => {
 const UserPlusIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-500">
     <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/>
+  </svg>
+);
+
+const ArrowLeft = ({ size }: { size: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
   </svg>
 );
 

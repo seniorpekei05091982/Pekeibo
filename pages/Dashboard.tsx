@@ -12,7 +12,7 @@ import {
   Skull,
   TrendingUp,
   Filter,
-  Info
+  MessageCircle
 } from 'lucide-react';
 import { StatCard } from '../components/StatCard';
 import { DataTable } from '../components/DataTable';
@@ -26,7 +26,11 @@ const INITIAL_JEMAAT_DATA = [
   ['Marta Zai', 'Rayon 3', 'Calon', 'Wanita', '0821-5555-4444'],
 ];
 
-const Dashboard: React.FC = () => {
+interface DashboardProps {
+  onSelectMenu: (id: string) => void;
+}
+
+const Dashboard: React.FC<DashboardProps> = ({ onSelectMenu }) => {
   const [filterStatus, setFilterStatus] = useState('Semua');
   const [filterRayon, setFilterRayon] = useState('Semua');
   const [selectedItem, setSelectedItem] = useState<any[] | null>(null);
@@ -40,17 +44,16 @@ const Dashboard: React.FC = () => {
   }, [filterStatus, filterRayon]);
 
   const stats = [
-    { title: 'Jemaat', value: INITIAL_JEMAAT_DATA.length, color: 'gray', icon: <Users size={48} /> },
-    { title: 'Jadwal Ibadah', value: 5, color: 'green', icon: <Calendar size={48} /> },
-    { title: 'Daftar Pelayanan', value: 6, color: 'red', icon: <List size={48} /> },
-    { title: 'Komisi', value: 4, color: 'yellow', icon: <UsersRound size={48} /> },
-    { title: 'Talenta', value: 5, color: 'teal', icon: <Star size={48} /> },
-    { title: 'Penyerahan Anak', value: 4, color: 'slate', icon: <UserPlus size={48} /> },
-    { title: 'Baptisan Air', value: 5, color: 'green', icon: <Droplets size={48} /> },
-    { title: 'Pernikahan', value: 3, color: 'pink', icon: <Heart size={48} /> },
-    { title: 'Kedukaan', value: 2, color: 'yellow', icon: <Skull size={48} /> },
-    { title: 'Jemaat Laki-Laki', value: 2, color: 'blue', icon: <Users size={48} /> },
-    { title: 'Jemaat Perempuan', value: 3, color: 'gray', icon: <Users size={48} /> },
+    { title: 'Jemaat', value: INITIAL_JEMAAT_DATA.length, color: 'gray', icon: <Users size={48} />, menuId: 'jemaat' },
+    { title: 'Jadwal Ibadah', value: 5, color: 'green', icon: <Calendar size={48} />, menuId: 'jadwal' },
+    { title: 'Daftar Pelayanan', value: 6, color: 'red', icon: <List size={48} />, menuId: 'pelayanan' },
+    { title: 'Komisi', value: 4, color: 'yellow', icon: <UsersRound size={48} />, menuId: 'komisi' },
+    { title: 'Penyerahan Anak', value: 4, color: 'slate', icon: <UserPlus size={48} />, menuId: 'penyerahan' },
+    { title: 'Baptisan Air', value: 5, color: 'green', icon: <Droplets size={48} />, menuId: 'baptisan' },
+    { title: 'Kedukaan', value: 2, color: 'yellow', icon: <Skull size={48} />, menuId: 'kedukaan' },
+    { title: 'Konseling', value: 3, color: 'blue', icon: <MessageCircle size={48} />, menuId: 'konseling' },
+    { title: 'Katekisasi', value: 12, color: 'teal', icon: <Star size={48} />, menuId: 'katekisasi' },
+    { title: 'Aset Gereja', value: 8, color: 'gray', icon: <List size={48} />, menuId: 'aset' },
   ];
 
   return (
@@ -67,7 +70,11 @@ const Dashboard: React.FC = () => {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
         {stats.map((s, idx) => (
-          <StatCard key={idx} {...s} />
+          <StatCard 
+            key={idx} 
+            {...s} 
+            onClick={() => onSelectMenu(s.menuId)}
+          />
         ))}
       </div>
 
@@ -120,36 +127,6 @@ const Dashboard: React.FC = () => {
             ]}
           />
         </div>
-      </div>
-
-      {/* Summary Tables Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <DataTable 
-          title="Komisi (Jumlah Anggota)" 
-          headers={['Komisi', 'Total', 'Aktif']} 
-          data={[
-            ['Sekolah Minggu', '25', '20'],
-            ['Pemuda', '42', '35'],
-            ['Perempuan', '60', '55'],
-            ['Laki-laki', '45', '40'],
-          ]}
-        />
-        <DataTable 
-          title="Keuangan Terakhir" 
-          headers={['Ket', 'Tgl', 'Jumlah']} 
-          data={[
-            ['Persembahan Minggu', '01 Jan', 'Rp 2.5jt'],
-            ['Biaya Listrik', '02 Jan', '-Rp 500k'],
-          ]}
-        />
-        <DataTable 
-          title="Aset Gereja" 
-          headers={['Barang', 'Status', 'Lokasi']} 
-          data={[
-            ['Gedung Gereja', 'Milik Sendiri', 'Tanah Abang'],
-            ['Sound System', 'Baik', 'Mimbar'],
-          ]}
-        />
       </div>
 
       <Modal 

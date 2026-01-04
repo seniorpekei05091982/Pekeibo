@@ -2,7 +2,7 @@
 import React, { useState, useMemo } from 'react';
 import { 
   Plus, MessageCircle, Edit, Trash2, ArrowLeft, Search, UserCheck,
-  CheckCircle2, AlertCircle, Calendar, Eye
+  CheckCircle2, AlertCircle, Calendar, Eye, Home
 } from 'lucide-react';
 import { TopStatsBar } from '../components/TopStatsBar';
 import { Modal } from '../components/Modal';
@@ -49,7 +49,7 @@ const INITIAL_KONSELING: KonselingData[] = [
   { id: '3', nomer: 'K-24/003', namaKonseli: 'Indah Kusuma', tanggal: '20/01/2024', konselor: 'Pdt. Samuel', topik: 'Spiritual', status: 'Dirujuk' },
 ];
 
-export const Konseling: React.FC = () => {
+export const Konseling: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const [data, setData] = useState<KonselingData[]>(INITIAL_KONSELING);
   const [mode, setMode] = useState<ViewMode>('list');
   const [selected, setSelected] = useState<KonselingData | null>(null);
@@ -112,7 +112,16 @@ export const Konseling: React.FC = () => {
     <div className="space-y-4">
       <TopStatsBar />
       <div className="flex justify-between items-center">
-        <h1 className="text-xl font-bold text-slate-700 flex items-center gap-2"><MessageCircle className="text-teal-600" /> Konseling Pastoral</h1>
+        <div className="flex items-center gap-4">
+          <button 
+            onClick={onBack}
+            className="p-2 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg text-slate-600 transition-all shadow-sm"
+            title="Kembali ke Dashboard"
+          >
+            <Home size={18} />
+          </button>
+          <h1 className="text-xl font-bold text-slate-700 flex items-center gap-2"><MessageCircle className="text-teal-600" /> Konseling Pastoral</h1>
+        </div>
         <button onClick={handleAdd} className="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold flex items-center gap-2 shadow-sm"><Plus size={14} /> Add Konseling</button>
       </div>
 

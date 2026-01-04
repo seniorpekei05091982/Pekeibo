@@ -2,7 +2,7 @@
 import React, { useState, useMemo } from 'react';
 import { 
   Plus, Search, Edit, Eye, Trash2, ArrowLeft, Calendar, User, Droplets,
-  CheckCircle2, AlertCircle
+  CheckCircle2, AlertCircle, Home
 } from 'lucide-react';
 import { TopStatsBar } from '../components/TopStatsBar';
 import { Modal } from '../components/Modal';
@@ -52,7 +52,7 @@ const INITIAL_BAPTISAN: BaptisanData[] = [
   { id: '3', nomerKartu: 'BAP-003/2024', nomerJemaat: 'J-202', nama: 'Samuel Wijaya', jenisKelamin: 'Laki-Laki', tempatLahir: 'Surabaya', tanggalLahir: '22/11/1995', tanggalBaptis: '15/01/2024', pendeta: 'Pdt. Lukas', tempatBaptis: 'Kolam Baptis X' },
 ];
 
-export const Baptisan: React.FC = () => {
+export const Baptisan: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const [data, setData] = useState<BaptisanData[]>(INITIAL_BAPTISAN);
   const [mode, setMode] = useState<ViewMode>('list');
   const [selected, setSelected] = useState<BaptisanData | null>(null);
@@ -115,7 +115,16 @@ export const Baptisan: React.FC = () => {
     <div className="space-y-4">
       <TopStatsBar />
       <div className="flex justify-between items-center">
-        <h1 className="text-xl font-bold text-slate-700 flex items-center gap-2"><Droplets className="text-blue-500" /> Baptisan Air</h1>
+        <div className="flex items-center gap-4">
+          <button 
+            onClick={onBack}
+            className="p-2 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg text-slate-600 transition-all shadow-sm"
+            title="Kembali ke Dashboard"
+          >
+            <Home size={18} />
+          </button>
+          <h1 className="text-xl font-bold text-slate-700 flex items-center gap-2"><Droplets className="text-blue-500" /> Baptisan Air</h1>
+        </div>
         <button onClick={handleAdd} className="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold flex items-center gap-2 shadow-sm"><Plus size={14} /> Add Baptisan</button>
       </div>
       

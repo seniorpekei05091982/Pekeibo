@@ -7,9 +7,10 @@ interface StatCardProps {
   value: number;
   color: string;
   icon: React.ReactNode;
+  onClick?: () => void;
 }
 
-export const StatCard: React.FC<StatCardProps> = ({ title, value, color, icon }) => {
+export const StatCard: React.FC<StatCardProps> = ({ title, value, color, icon, onClick }) => {
   const colorMap: Record<string, string> = {
     gray: 'bg-slate-500',
     green: 'bg-emerald-500',
@@ -24,17 +25,20 @@ export const StatCard: React.FC<StatCardProps> = ({ title, value, color, icon })
   const selectedColor = colorMap[color] || 'bg-blue-500';
 
   return (
-    <div className={`${selectedColor} text-white rounded shadow-sm overflow-hidden flex flex-col relative`}>
+    <div 
+      onClick={onClick}
+      className={`${selectedColor} text-white rounded shadow-sm overflow-hidden flex flex-col relative cursor-pointer hover:brightness-110 transition-all active:scale-95 group`}
+    >
       <div className="p-5 flex justify-between items-start">
         <div className="z-10">
           <h3 className="text-4xl font-bold mb-1">{value}</h3>
           <p className="text-sm font-medium opacity-90">{title}</p>
         </div>
-        <div className="absolute top-2 right-2 opacity-20 transform scale-150">
+        <div className="absolute top-2 right-2 opacity-20 transform scale-150 group-hover:scale-[1.7] transition-transform">
           {icon}
         </div>
       </div>
-      <button className="bg-black/10 hover:bg-black/20 w-full py-1 text-xs font-medium flex items-center justify-center gap-2 transition-colors">
+      <button className="bg-black/10 hover:bg-black/20 w-full py-1 text-xs font-medium flex items-center justify-center gap-2 transition-colors mt-auto">
         More info <ArrowRight size={14} />
       </button>
     </div>

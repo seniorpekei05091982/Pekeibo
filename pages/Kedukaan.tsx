@@ -2,7 +2,7 @@
 import React, { useState, useMemo } from 'react';
 import { 
   Plus, Search, Edit, Eye, Trash2, ArrowLeft, Skull, User,
-  CheckCircle2, AlertCircle, Calendar
+  CheckCircle2, AlertCircle, Calendar, Home
 } from 'lucide-react';
 import { TopStatsBar } from '../components/TopStatsBar';
 import { Modal } from '../components/Modal';
@@ -50,7 +50,7 @@ const INITIAL_KEDUKAAN: KedukaanData[] = [
   { id: '2', nomerLaporan: 'DK-002/24', namaAlmarhum: 'Ibu Sarah', jenisKelamin: 'Perempuan', tanggalMeninggal: '20/02/2024', tempatMeninggal: 'Kediaman', tanggalPemakaman: '22/02/2024', lokasiPemakaman: 'TPU Keputih', pelayan: 'Pdt. Abraham' },
 ];
 
-export const Kedukaan: React.FC = () => {
+export const Kedukaan: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const [data, setData] = useState<KedukaanData[]>(INITIAL_KEDUKAAN);
   const [mode, setMode] = useState<ViewMode>('list');
   const [selected, setSelected] = useState<KedukaanData | null>(null);
@@ -110,7 +110,16 @@ export const Kedukaan: React.FC = () => {
     <div className="space-y-4">
       <TopStatsBar />
       <div className="flex justify-between items-center">
-        <h1 className="text-xl font-bold text-slate-700 flex items-center gap-2"><Skull className="text-amber-600" /> Pelayanan Kedukaan</h1>
+        <div className="flex items-center gap-4">
+          <button 
+            onClick={onBack}
+            className="p-2 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg text-slate-600 transition-all shadow-sm"
+            title="Kembali ke Dashboard"
+          >
+            <Home size={18} />
+          </button>
+          <h1 className="text-xl font-bold text-slate-700 flex items-center gap-2"><Skull className="text-amber-600" /> Pelayanan Kedukaan</h1>
+        </div>
         <button onClick={handleAdd} className="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold flex items-center gap-2 shadow-sm"><Plus size={14} /> Add Laporan</button>
       </div>
 

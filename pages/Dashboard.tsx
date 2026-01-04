@@ -74,11 +74,15 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectMenu }) => {
         <div className="absolute bottom-0 left-0 w-32 h-32 bg-orange-500/5 rounded-full translate-y-1/2 -translate-x-1/2"></div>
         
         <div className="relative z-10 flex flex-col items-start space-y-1">
-          <h2 className="text-lg md:text-xl font-medium text-slate-500 tracking-tight">Selamat Datang di</h2>
-          <h3 className="text-2xl md:text-3xl font-bold text-slate-800 leading-tight tracking-tight">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="h-1 w-12 bg-blue-500 rounded-full"></div>
+            <span className="text-[10px] font-black text-blue-500 uppercase tracking-[0.2em]">Selamat Datang</span>
+          </div>
+          
+          <h3 className="text-xl md:text-2xl font-bold text-slate-800 leading-tight uppercase tracking-tight">
             Gereja Kemah Injil (KINGMI) Di Tanah Papua
           </h3>
-          <p className="text-xs md:text-sm font-bold text-blue-600/80 uppercase tracking-widest pt-2 border-t border-slate-100 w-full max-w-2xl mt-1">
+          <p className="text-xs md:text-sm font-bold text-blue-600/70 uppercase tracking-widest pt-2 border-t border-slate-100 w-full max-w-xl mt-1">
             Sistem Informasi Manajemen Gereja Terintegrasi
           </p>
         </div>

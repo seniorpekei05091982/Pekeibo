@@ -50,6 +50,7 @@ const NavMenuItem: React.FC<{
   return (
     <div className="w-full">
       <button
+        type="button"
         onClick={() => {
           if (hasChildren) setIsOpen(!isOpen);
           else onSelect(item.id);
@@ -98,7 +99,7 @@ const NavMenuItem: React.FC<{
 
 export const Sidebar: React.FC<SidebarProps> = ({ onSelect, activeId, churchInfo, adminInfo }) => {
   return (
-    <div className="h-full bg-slate-950 text-white flex flex-col w-64 shadow-[10px_0_30px_rgba(0,0,0,0.2)] border-r border-slate-900">
+    <div className="h-full bg-slate-950 text-white flex flex-col w-64 shadow-[10px_0_30px_rgba(0,0,0,0.2)] border-r border-slate-900 relative">
       {/* Brand Header */}
       <div className="p-6 bg-orange-600/90 backdrop-blur-md sticky top-0 z-30 flex items-center gap-4 border-b border-orange-500/20">
         <div className="w-12 h-12 bg-white rounded-2xl shadow-2xl flex items-center justify-center overflow-hidden shrink-0 border-2 border-white/20 transform hover:scale-110 transition-transform duration-500">
@@ -138,11 +139,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ onSelect, activeId, churchInfo
         ))}
       </nav>
       
-      {/* FOOTER AREA WITH LOGOUT */}
-      <div className="mt-auto p-4 bg-slate-950 border-t border-slate-900 space-y-4">
+      {/* FOOTER AREA WITH LOGOUT - Explicitly Styled and Accessible */}
+      <div className="mt-auto p-4 bg-slate-950 border-t border-slate-900 space-y-4 relative z-50">
         <button 
-          onClick={() => onSelect('logout')}
-          className="w-full flex items-center gap-4 px-6 py-4 bg-rose-500/10 hover:bg-rose-600 text-rose-500 hover:text-white rounded-2xl transition-all duration-300 group shadow-lg hover:shadow-rose-600/20 active:scale-95"
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            onSelect('logout');
+          }}
+          className="w-full flex items-center justify-center gap-4 px-6 py-4 bg-rose-500 hover:bg-rose-600 text-white rounded-2xl transition-all duration-300 group shadow-xl hover:shadow-rose-600/40 active:scale-95 cursor-pointer"
         >
           <LogOut size={18} className="group-hover:-translate-x-1 transition-transform" />
           <span className="text-[10px] font-black uppercase tracking-[0.2em]">Keluar Sistem</span>

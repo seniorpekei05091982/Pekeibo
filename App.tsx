@@ -105,12 +105,10 @@ const App: React.FC = () => {
   });
 
   const handleLogout = () => {
-    // Memberikan feedback konfirmasi yang jelas
-    const confirmLogout = window.confirm('Apakah Anda yakin ingin keluar dari sistem SIM GEREJA?');
-    if (confirmLogout) {
+    // Memberikan feedback konfirmasi yang sangat jelas
+    if (window.confirm('Sistem akan menutup sesi Anda. Apakah Anda yakin ingin keluar?')) {
       setIsLoggedIn(false);
       setActiveMenu('dashboard');
-      // Opsional: bersihkan state lain jika diperlukan
     }
   };
 

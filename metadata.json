@@ -1,0 +1,7 @@
+{
+  "name": "SIM_GEREJA - Integrated Church Management System",
+  "description": "A professional and comprehensive church management system for congregational data, pastoral services, financial reporting, and asset management.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}

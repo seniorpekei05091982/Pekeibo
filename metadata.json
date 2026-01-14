@@ -1,6 +1,6 @@
 {
-  "name": "SIM_GEREJA - Integrated Church Management System",
-  "description": "A professional and comprehensive church management system for congregational data, pastoral services, financial reporting, and asset management.",
+  "name": "SIM_GEREJA v3.5 - Kingmi Papua Master Data Edition",
+  "description": "Integrated Church Management System for Kingmi Papua, featuring 4 core modules: Organization, Human Resources, Administration & Assets, and Service Ecosystem.",
   "requestFramePermissions": [
     "camera"
   ]

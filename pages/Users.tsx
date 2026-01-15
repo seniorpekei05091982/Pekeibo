@@ -42,6 +42,12 @@ export const Users: React.FC<UsersProps> = ({ onBack, userRole }) => {
     u.username.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handleDelete = (user: UserData) => {
+    if (window.confirm(`HAPUS AKSES PENGGUNA: "${user.name}"?\nTindakan ini akan membatalkan hak akses login user tersebut secara permanen.`)) {
+      setData(data.filter(u => u.id !== user.id));
+    }
+  };
+
   const renderTopNav = (title: string, currentAction?: string) => (
     <div className="flex justify-between items-center mb-6">
       <div className="flex items-center gap-4">
@@ -99,7 +105,7 @@ export const Users: React.FC<UsersProps> = ({ onBack, userRole }) => {
                 type="text" 
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="border border-slate-300 rounded-full px-4 py-1.5 focus:ring-1 focus:ring-blue-500 outline-none w-48 md:w-64" 
+                className="border border-slate-300 rounded-full px-4 py-1.5 focus:ring-1 focus:ring-blue-500 outline-none w-48 md:w-64 font-bold" 
               />
             </div>
           </div>
@@ -129,8 +135,8 @@ export const Users: React.FC<UsersProps> = ({ onBack, userRole }) => {
                     {isSinode && (
                       <td className="px-3 py-4 text-center whitespace-nowrap">
                         <div className="flex justify-center gap-1">
-                          <button onClick={() => { setSelected(user); setMode('edit'); }} className="px-2 py-1 bg-amber-400 hover:bg-amber-500 text-white rounded shadow-sm text-[10px] font-bold flex items-center gap-1 transition-all"><Edit size={10} /> Ubah</button>
-                          <button className="px-2 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded shadow-sm text-[10px] font-bold flex items-center gap-1 transition-all"><Trash2 size={10} /> Hapus</button>
+                          <button onClick={() => { setSelected(user); setMode('edit'); }} className="px-3 py-1.5 bg-amber-400 hover:bg-amber-500 text-white rounded-lg text-[9px] font-black uppercase flex items-center gap-1 transition-all"><Edit size={10} /> Ubah</button>
+                          <button onClick={() => handleDelete(user)} className="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-[9px] font-black uppercase flex items-center gap-1 transition-all"><Trash2 size={10} /> Hapus</button>
                         </div>
                       </td>
                     )}
@@ -210,7 +216,7 @@ export const Users: React.FC<UsersProps> = ({ onBack, userRole }) => {
       {mode === 'list' ? renderListView() : renderFormView(mode === 'edit')}
       <style>{`
         .form-input {
-          @apply w-full px-4 py-3 text-sm border border-slate-200 rounded-xl focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-slate-300 bg-slate-50;
+          @apply w-full px-4 py-3 text-sm border border-slate-200 rounded-xl focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-slate-300 bg-slate-50 font-bold;
         }
       `}</style>
     </div>
